@@ -8,7 +8,7 @@ namespace Server
         {
             Console.Title = "Magical Wheel Server";
 
-            Server.Start(50, 26950);
+            Server.Start(2, 26950);
 
             Console.ReadKey();
         }
