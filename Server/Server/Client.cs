@@ -33,6 +33,8 @@ namespace Server
             receiveBuffer = new byte[dataBufferSize];
 
             stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
+
+            ServerSender.Welcome(id, "Welcome to the server!");
         }
 
         private void ReceiveCallback(IAsyncResult result)
@@ -54,6 +56,21 @@ namespace Server
             catch (Exception e)
             {
                 Console.WriteLine($"Error receiving TCP data: {e}");
+            }
+        }
+
+        public void SendData(Packet packet)
+        {
+            try
+            {
+                if (socket != null)
+                {
+                    stream.BeginWrite(packet.ToArray(), 0, packet.Length(), null, null);
+                }
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine($"Error sending data to player {id} via TCP: {e}");
             }
         }
     }
