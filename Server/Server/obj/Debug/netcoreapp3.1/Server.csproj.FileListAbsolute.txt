@@ -1,0 +1,14 @@
+H:\Project\Magical-Wheel-Net\Server\Server\bin\Debug\netcoreapp3.1\Server.exe
+H:\Project\Magical-Wheel-Net\Server\Server\bin\Debug\netcoreapp3.1\Server.deps.json
+H:\Project\Magical-Wheel-Net\Server\Server\bin\Debug\netcoreapp3.1\Server.runtimeconfig.json
+H:\Project\Magical-Wheel-Net\Server\Server\bin\Debug\netcoreapp3.1\Server.runtimeconfig.dev.json
+H:\Project\Magical-Wheel-Net\Server\Server\bin\Debug\netcoreapp3.1\Server.dll
+H:\Project\Magical-Wheel-Net\Server\Server\bin\Debug\netcoreapp3.1\Server.pdb
+H:\Project\Magical-Wheel-Net\Server\Server\obj\Debug\netcoreapp3.1\Server.csproj.AssemblyReference.cache
+H:\Project\Magical-Wheel-Net\Server\Server\obj\Debug\netcoreapp3.1\Server.GeneratedMSBuildEditorConfig.editorconfig
+H:\Project\Magical-Wheel-Net\Server\Server\obj\Debug\netcoreapp3.1\Server.AssemblyInfoInputs.cache
+H:\Project\Magical-Wheel-Net\Server\Server\obj\Debug\netcoreapp3.1\Server.AssemblyInfo.cs
+H:\Project\Magical-Wheel-Net\Server\Server\obj\Debug\netcoreapp3.1\Server.csproj.CoreCompileInputs.cache
+H:\Project\Magical-Wheel-Net\Server\Server\obj\Debug\netcoreapp3.1\Server.dll
+H:\Project\Magical-Wheel-Net\Server\Server\obj\Debug\netcoreapp3.1\Server.pdb
+H:\Project\Magical-Wheel-Net\Server\Server\obj\Debug\netcoreapp3.1\Server.genruntimeconfig.cache
