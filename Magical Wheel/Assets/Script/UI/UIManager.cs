@@ -8,7 +8,7 @@ public class UIManager : MonoBehaviour
     public string userName;
     public GameObject startMenu;
     public InputField inp;
-    public UIManager instance;
+    static public UIManager instance;
 
     private void Awake()
     {
