@@ -42,6 +42,7 @@ namespace Server
         {
             TcpClient client = tcpListener.EndAcceptTcpClient(result);
             tcpListener.BeginAcceptTcpClient(TcpConnectCallback, null);
+            //Notice New Connection
             Console.WriteLine($"User {client.Client.RemoteEndPoint} connected...");
             for (int i = 1; i <= MaxPlayers; i++)
             {
