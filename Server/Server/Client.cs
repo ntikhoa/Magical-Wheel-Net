@@ -1,7 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Net;
 using System.Net.Sockets;
 
 namespace Server
@@ -12,6 +9,8 @@ namespace Server
 
         public int id;
 
+        public Player player;
+
         public Client(int clientId)
         {
             id = clientId;
@@ -21,6 +20,7 @@ namespace Server
 
         private NetworkStream stream;
         private byte[] receiveBuffer;
+        private Packet receivedData;
 
         public void Connect(TcpClient _socket)
         {
@@ -34,7 +34,7 @@ namespace Server
 
             stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
 
-            ServerSender.Welcome(id, "Welcome to the server!");
+            ServerSender.Welcome(id, PktMsg.WELCOME);
         }
 
         private void ReceiveCallback(IAsyncResult result)
@@ -50,6 +50,7 @@ namespace Server
                 byte[] data = new byte[byteLength];
                 Array.Copy(receiveBuffer, data, byteLength);
 
+                receivedData.Reset(HandleData(data));
                 //handle data
                 stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
             }
@@ -72,6 +73,57 @@ namespace Server
             {
                 Console.WriteLine($"Error sending data to player {id} via TCP: {e}");
             }
+        }
+
+        private bool HandleData(byte[] data)
+        {
+            int packetLength = 0;
+
+            receivedData.SetBytes(data);
+
+            if (receivedData.UnreadLength() >= 4)
+            {
+                // If client's received data contains a packet
+                packetLength = receivedData.ReadInt();
+                if (packetLength <= 0)
+                {
+                    // If packet contains no data
+                    return true; // Reset receivedData instance to allow it to be reused
+                }
+            }
+
+            while (packetLength > 0 && packetLength <= receivedData.UnreadLength())
+            {
+                // While packet contains data AND packet data length doesn't exceed the length of the packet we're reading
+                byte[] _packetBytes = receivedData.ReadBytes(packetLength);
+                ThreadManager.ExecuteOnMainThread(() =>
+                {
+                    using (Packet _packet = new Packet(_packetBytes))
+                    {
+                        int _packetId = _packet.ReadInt();
+                        Server.packetHandlers[_packetId](id, _packet); // Call appropriate method to handle the packet
+                    }
+                });
+
+                packetLength = 0; // Reset packet length
+                if (receivedData.UnreadLength() >= 4)
+                {
+                    // If client's received data contains another packet
+                    packetLength = receivedData.ReadInt();
+                    if (packetLength <= 0)
+                    {
+                        // If packet contains no data
+                        return true; // Reset receivedData instance to allow it to be reused
+                    }
+                }
+            }
+
+            if (packetLength <= 1)
+            {
+                return true; // Reset receivedData instance to allow it to be reused
+            }
+
+            return false;
         }
     }
 }

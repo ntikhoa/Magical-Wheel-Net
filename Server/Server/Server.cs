@@ -11,6 +11,8 @@ namespace Server
         public static int MaxPlayers { get; private set; }
         public static int Port { get; private set; }
         public static Dictionary<int, Client> clients = new Dictionary<int, Client>();
+        public delegate void PacketHandler(int fromClient, Packet packet);
+        public static Dictionary<int, PacketHandler> packetHandlers;
 
         private static TcpListener tcpListener;
 
@@ -32,10 +34,16 @@ namespace Server
 
         private static void InitializeClient()
         {
-            for (int i = 0; i <= MaxPlayers; i++)
+            for (int i = 0; i < MaxPlayers; i++)
             {
                 clients.Add(i, new Client(i));
             }
+
+            packetHandlers = new Dictionary<int, PacketHandler>()
+            {
+                { (int)ClientPackets.register, ServerHandle.Register }
+            };
+
         }
 
         private static void TcpConnectCallback(IAsyncResult result)
@@ -54,6 +62,11 @@ namespace Server
             }
 
             Console.WriteLine($"{client.Client.RemoteEndPoint} failed to connect: Server full!");
+        }
+
+        public static void InitPlayer(int clientId, string username)
+        {
+            clients[clientId].player = new Player(clientId, username);
         }
     }
 }

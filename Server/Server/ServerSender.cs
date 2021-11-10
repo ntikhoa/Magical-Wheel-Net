@@ -6,7 +6,6 @@ namespace Server
 {
     class ServerSender
     {
-
         public static void Welcome(int toClientId, string message)
         {
             using (Packet packet = new Packet((int)ServerPackets.welcome))
@@ -14,6 +13,24 @@ namespace Server
                 packet.Write(message);
                 packet.Write(toClientId);
                 SendTcpData(toClientId, packet);
+            }
+        }
+
+        public static void UsernameAlreadyExits(int toClientId, string message)
+        {
+            using (Packet packet = new Packet((int)ServerPackets.username_already_exist))
+            {
+                packet.Write(message);
+                SendTcpData(toClientId, packet);
+            }
+        }
+
+        public static void GameStart(string message)
+        {
+            using (Packet packet = new Packet((int)ServerPackets.game_start))
+            {
+                packet.Write(message);
+                SendTCPDataToAll(packet);
             }
         }
 
