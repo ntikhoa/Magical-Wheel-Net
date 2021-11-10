@@ -14,6 +14,7 @@ namespace Server
         public Client(int clientId)
         {
             id = clientId;
+            player = new Player(-1, "");
         }
 
         public TcpClient socket;
@@ -30,6 +31,7 @@ namespace Server
 
             stream = socket.GetStream();
 
+            receivedData = new Packet();
             receiveBuffer = new byte[dataBufferSize];
 
             stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
