@@ -6,6 +6,7 @@ public class ClientHandle : MonoBehaviour
 {
     public static void Welcome(Packet _packet)
     {
+        Debug.Log("Welcome Get");
         string _msg = _packet.ReadString();
         int _myId = _packet.ReadInt();
 
