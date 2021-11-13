@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace Server
@@ -7,18 +8,36 @@ namespace Server
     class Program
     {
         private static bool isRunning = false;
-
+        private static string command = "";
+        private static bool commandToExecute = false;
+        private static Dictionary<string, Action> commandActions;
+        private static Thread mainThread;
         static void Main(string[] args)
         {
+            commandActions = new Dictionary<string, Action>
+            {
+                {"end", endProgram }
+            };
+
             Console.Title = "Magical Wheel Server";
 
             GameLogic.InitGame();
 
             isRunning = true;
-            Thread mainThread = new Thread(new ThreadStart(MainThread));
+            mainThread = new Thread(new ThreadStart(MainThread));
             mainThread.Start();
 
             Server.Start(2, 26950);
+
+            //read command from server
+            while (isRunning)
+            {
+                if (!commandToExecute)
+                {
+                    command = Console.ReadLine();
+                    commandToExecute = commandActions.ContainsKey(command);
+                }
+            }
         }
 
         private static void MainThread()
@@ -30,6 +49,19 @@ namespace Server
             {
                 while (nextLoop < DateTime.Now)
                 {
+                    if (command != "")
+                    {
+                        lock (command)
+                        {
+                            command.ToLower();
+                            if (commandActions.ContainsKey(command))
+                            {
+                                Console.WriteLine("Please wait for the execution...");
+                                ThreadManager.ExecuteOnMainThread(commandActions[command]);
+                            }
+                            command = "";
+                        }
+                    }
                     // If the time for the next loop is in the past, aka it's time to execute another tick
                     GameLogic.Update(); // Execute game logic
 
@@ -42,6 +74,15 @@ namespace Server
                     }
                 }
             }
+            Console.WriteLine("Program Ended.");
+            Server.End();
+        }
+
+        private static void endProgram()
+        {
+            isRunning = false;
+            Console.WriteLine("Ending Program...");
+            commandToExecute = false;
         }
     }
 }

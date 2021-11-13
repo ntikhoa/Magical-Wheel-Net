@@ -31,7 +31,16 @@ namespace Server
 
             Console.WriteLine($"Server start on port {Port}");
         }
-
+        public static void End()
+        {
+            for (int i = 0; i < MaxPlayers; i++)
+            {
+                if (clients[i].socket != null)
+                {
+                    clients[i].socket.Close();
+                }
+            }
+        }
         private static void InitializeClient()
         {
             for (int i = 0; i < MaxPlayers; i++)

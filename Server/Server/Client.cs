@@ -59,6 +59,10 @@ namespace Server
             catch (Exception e)
             {
                 Console.WriteLine($"Error receiving TCP data: {e}");
+                socket.Close();
+                socket = null;
+                player.id = -1;
+                player.username = "";
             }
         }
 
