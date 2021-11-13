@@ -12,6 +12,8 @@ namespace Server
         {
             Console.Title = "Magical Wheel Server";
 
+            GameLogic.InitGame();
+
             isRunning = true;
             Thread mainThread = new Thread(new ThreadStart(MainThread));
             mainThread.Start();
