@@ -11,7 +11,7 @@ public class Client : MonoBehaviour
     public string ip = "127.0.0.1";
     public int port = 26950;
     public int id = 0;
-
+    public string userName = "";
     private delegate void PacketHandler(Packet _packet);
     private static Dictionary<int, PacketHandler> packetHandlers;
 
@@ -40,6 +40,7 @@ public class Client : MonoBehaviour
 
     public void ConnectedToServer()
     {
+        userName = UIManager.instance.userName;
         tcp.Connect();
     }
 
@@ -54,10 +55,13 @@ public class Client : MonoBehaviour
 
     public void Disconnect()
     {
-        if (tcp.socket.Connected)
+        if (tcp.socket != null)
         {
-            tcp.socket.Close();
-            Debug.Log("Close Connection");
+            if (tcp.socket.Connected)
+            {
+                tcp.socket.Close();
+                Debug.Log("Close Connection");
+            }
         }
     }
 

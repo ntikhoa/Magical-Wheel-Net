@@ -24,8 +24,8 @@ public class UIManager : MonoBehaviour
 
     public void ConnectedToServer()
     {
+        userName = inp.text;
         startMenu.SetActive(false);
-        inp.interactable = false;
         Client.instance.ConnectedToServer();
     }
 }
