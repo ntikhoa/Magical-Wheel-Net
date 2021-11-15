@@ -50,19 +50,11 @@ public class Client : MonoBehaviour
         {
             { (int)ServerPackets.welcome, ClientHandle.Welcome }
         };
-        Debug.Log("Initialized packets");
     }
 
     public void Disconnect()
     {
-        if (tcp.socket != null)
-        {
-            if (tcp.socket.Connected)
-            {
-                tcp.socket.Close();
-                Debug.Log("Close Connection");
-            }
-        }
+        tcp.Disconnect();
     }
 
     public class TCP
@@ -82,8 +74,19 @@ public class Client : MonoBehaviour
 
             };
             receiveBuffer = new byte[dataSize];
-            Debug.Log("Begin Connect");
+            SocketDebug.Log("Begin Connect");
             socket.BeginConnect(instance.ip, instance.port, ConnectCallBack, socket);
+        }
+        public void Disconnect()
+        {
+            if (socket != null)
+            {
+                if (socket.Connected)
+                {
+                    socket.Close();
+                    SocketDebug.Log("Close Connection");
+                }
+            }
         }
 
         public void SendData(Packet _packet)
@@ -97,33 +100,40 @@ public class Client : MonoBehaviour
             }
             catch (Exception _ex)
             {
-                Debug.Log($"Error sending data to server via TCP: {_ex}");
+                SocketDebug.Log($"Error sending data to server via TCP: {_ex}");
             }
         }
 
         private void ConnectCallBack(IAsyncResult _res)
         {
-            Debug.Log("Connect Call Back");
-            socket.EndConnect(_res);
-            if (!socket.Connected)
+            try
             {
-                return;
+                SocketDebug.Log("Connect Call Back");
+                socket.EndConnect(_res);
+                if (!socket.Connected)
+                {
+                    return;
+                }
+                stream = socket.GetStream();
+                receiveData = new Packet();
+                SocketDebug.Log("Begin Read");
+                stream.BeginRead(receiveBuffer, 0, dataSize, ReceiveCallBack, null);
             }
-            stream = socket.GetStream();
-            receiveData = new Packet();
-            Debug.Log("Begin Read");
-            stream.BeginRead(receiveBuffer, 0, dataSize, ReceiveCallBack, null);
+            catch(Exception ex)
+            {
+                SocketDebug.Log(ex.Message);
+            }
         }
 
         private void ReceiveCallBack(IAsyncResult _res)
         {
-            Debug.Log("Receive Call Back");
+            SocketDebug.Log("Receive Call Back");
             try
             {
                 int _bytelength = stream.EndRead(_res);
                 if(_bytelength == 0)
                 {
-                    Debug.Log("Length = 0");
+                    SocketDebug.Log("Length = 0");
                     return;
                 }
 
@@ -132,13 +142,10 @@ public class Client : MonoBehaviour
                 receiveData.Reset(CheckInvalidData(_data));
                 stream.BeginRead(receiveBuffer, 0, dataSize, ReceiveCallBack, null);
             }
-            catch
+            catch(Exception ex)
             {
-                if (socket.Connected)
-                {
-                    socket.Close();
-                }
-                Debug.LogError("Error Connection Exception");
+                SocketDebug.Log(ex.Message);
+                Disconnect();
             }
         }
 
