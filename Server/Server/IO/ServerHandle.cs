@@ -36,7 +36,7 @@ namespace Server
 
             if (allReady)
             {
-                GameLogic.SetState(STATE.Game_Start);
+                GameLogic.state = STATE.Game_Start;
             }
         }
     }

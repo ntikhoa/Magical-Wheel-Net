@@ -64,6 +64,7 @@ namespace Server
             //Check if server want to start or quit
 
             Console.WriteLine("Waiting Server");
+
             Thread.Sleep(5000);
             state = STATE.Waiting_Player;
             return;
