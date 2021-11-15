@@ -16,7 +16,7 @@ namespace Server
         {
             commandActions = new Dictionary<string, Action>
             {
-                {"end", endProgram }
+                {"end", EndProgram }
             };
 
             Console.Title = "Magical Wheel Server";
@@ -29,6 +29,7 @@ namespace Server
 
             Server.Start(2, 26950);
 
+
             //read command from server
             while (isRunning)
             {
@@ -36,6 +37,8 @@ namespace Server
                 {
                     command = Console.ReadLine();
                     commandToExecute = commandActions.ContainsKey(command);
+             
+                    GameLogic.state = STATE.Waiting_Server;
                 }
             }
         }
@@ -78,7 +81,7 @@ namespace Server
             Server.End();
         }
 
-        private static void endProgram()
+        private static void EndProgram()
         {
             isRunning = false;
             Console.WriteLine("Ending Program...");

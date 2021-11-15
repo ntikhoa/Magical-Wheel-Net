@@ -1,24 +1,20 @@
 {
   "format": 1,
   "restore": {
-    "D:\\Github\\Network\\Magical-Wheel-Net\\Server\\Server\\Server.csproj": {}
+    "H:\\Project\\Magical-Wheel-Net\\Server\\Server\\Server.csproj": {}
   },
   "projects": {
-    "D:\\Github\\Network\\Magical-Wheel-Net\\Server\\Server\\Server.csproj": {
+    "H:\\Project\\Magical-Wheel-Net\\Server\\Server\\Server.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "D:\\Github\\Network\\Magical-Wheel-Net\\Server\\Server\\Server.csproj",
+        "projectUniqueName": "H:\\Project\\Magical-Wheel-Net\\Server\\Server\\Server.csproj",
         "projectName": "Server",
-        "projectPath": "D:\\Github\\Network\\Magical-Wheel-Net\\Server\\Server\\Server.csproj",
-        "packagesPath": "C:\\Users\\dell\\.nuget\\packages\\",
-        "outputPath": "D:\\Github\\Network\\Magical-Wheel-Net\\Server\\Server\\obj\\",
+        "projectPath": "H:\\Project\\Magical-Wheel-Net\\Server\\Server\\Server.csproj",
+        "packagesPath": "C:\\Users\\KHOA\\.nuget\\packages\\",
+        "outputPath": "H:\\Project\\Magical-Wheel-Net\\Server\\Server\\obj\\",
         "projectStyle": "PackageReference",
-        "fallbackFolders": [
-          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-        ],
         "configFilePaths": [
-          "C:\\Users\\dell\\AppData\\Roaming\\NuGet\\NuGet.Config",
-          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Users\\KHOA\\AppData\\Roaming\\NuGet\\NuGet.Config",
           "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [

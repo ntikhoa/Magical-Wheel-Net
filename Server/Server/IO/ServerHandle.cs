@@ -21,12 +21,13 @@ namespace Server
             }
 
             Server.InitPlayer(fromClient, username);
+            GameLogic.state = STATE.Waiting_Player;
 
             //check if all player already register
             bool allReady = true;
             for (int i = 0; i < Server.clients.Count; i++)
             {
-                if (Server.clients[i].player.username == null 
+                if (Server.clients[i].player.id == -1 
                     || Server.clients[i].player.username == "")
                 {
                     allReady = false;
@@ -35,11 +36,7 @@ namespace Server
 
             if (allReady)
             {
-                for (int i = 0; i < Server.clients.Count; i++)
-                {
-                    Console.WriteLine(Server.clients[i].player.username);
-                }
-                ServerSender.GameStart(PktMsg.GAME_START);
+                GameLogic.SetState(STATE.Game_Start);
             }
         }
     }
