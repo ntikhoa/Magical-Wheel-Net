@@ -9,7 +9,12 @@ namespace Server
     {
         welcome = 1,
         username_already_exist = 2,
-        game_start = 3
+        game_start = 3,
+        player_turn = 4,
+        correct = 5,
+        incorrect = 6,
+        disqualify = 7,
+        end_rank = 8
     }
 
     /// <summary>Sent from client to server.</summary>

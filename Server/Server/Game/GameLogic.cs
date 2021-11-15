@@ -69,10 +69,6 @@ namespace Server
             Console.WriteLine("Waiting Server");
 
             Thread.Sleep(5000);
-            Console.WriteLine("Wake up");
-            Console.WriteLine(STATE.Waiting_Player);
-            state = STATE.Waiting_Player;
-            return;
             
             for (int i = 0; i < Server.clients.Count; i++)
             {
