@@ -21,7 +21,7 @@ namespace Server
             }
 
             Server.InitPlayer(fromClient, username);
-            GameLogic.state = STATE.Waiting_Player;
+            GameLogic.SetState(STATE.Waiting_Player);
 
             //check if all player already register
             bool allReady = true;
@@ -36,7 +36,7 @@ namespace Server
 
             if (allReady)
             {
-                GameLogic.state = STATE.Game_Start;
+                GameLogic.SetState(STATE.Game_Start);
             }
         }
     }

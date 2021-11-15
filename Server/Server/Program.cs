@@ -37,8 +37,8 @@ namespace Server
                 {
                     command = Console.ReadLine();
                     commandToExecute = commandActions.ContainsKey(command);
-             
-                    GameLogic.state = STATE.Waiting_Server;
+
+                    GameLogic.SetState(STATE.Waiting_Server);
                 }
             }
         }
