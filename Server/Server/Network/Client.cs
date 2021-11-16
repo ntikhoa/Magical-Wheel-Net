@@ -35,7 +35,7 @@ namespace Server
             receiveBuffer = new byte[dataBufferSize];
 
             stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
-
+            Console.WriteLine($"Welcome { socket.Client.RemoteEndPoint} as player {id}");
             ServerSender.Welcome(id, PktMsg.WELCOME);
         }
 

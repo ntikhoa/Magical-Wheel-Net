@@ -8,6 +8,7 @@ namespace Server
     {
         public static void Register(int fromClient, Packet packet)
         {
+            int id = packet.ReadInt();
             string username = packet.ReadString();
 
             //check username exist

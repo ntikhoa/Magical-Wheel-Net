@@ -25,6 +25,7 @@ namespace Server
             InitializeClient();
 
             tcpListener = new TcpListener(IPAddress.Loopback, Port);
+            //tcpListener.Server.Blocking = false;
             tcpListener.Start();
 
             tcpListener.BeginAcceptTcpClient(TcpConnectCallback, null);
@@ -69,7 +70,6 @@ namespace Server
                     return;
                 }
             }
-
             Console.WriteLine($"{client.Client.RemoteEndPoint} failed to connect: Server full!");
         }
 
