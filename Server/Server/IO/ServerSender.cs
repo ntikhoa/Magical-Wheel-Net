@@ -25,11 +25,52 @@ namespace Server
             }
         }
 
-        public static void GameStart(string message)
+        public static void InformPlayer()
         {
-            using (Packet packet = new Packet((int)ServerPackets.game_start))
+            using(Packet packet = new Packet((int)ServerPackets.inform_player))
             {
-                packet.Write(message);
+                packet.Write(Server.clients.Count);
+                for (int i = 0; i < Server.clients.Count; i++)
+                {
+                    packet.Write(Server.clients[i].player.id);
+                    packet.Write(Server.clients[i].player.username);
+                }
+                SendTCPDataToAll(packet);
+            }
+        }
+
+        public static void SendGuessWord(GuessWord guessWord, int timeout)
+        {
+            using (Packet packet = new Packet((int)ServerPackets.send_game_obj))
+            {
+                packet.Write(guessWord.word.Length);
+                packet.Write(guessWord.description);
+                packet.Write(timeout);
+                
+                SendTCPDataToAll(packet);
+            }
+        }
+
+        public static void SendTurnStart(int playerIdTurn)
+        {
+            using (Packet packet = new Packet((int)ServerPackets.turn_start))
+            {
+                packet.Write(Server.clients[playerIdTurn].player.id);
+                packet.Write(Server.clients[playerIdTurn].player.username);
+
+                SendTCPDataToAll(packet);
+            }
+        }
+
+        public static void SendTurnEnd(int playerIdTurn, GuessWord guessWord)
+        {
+            using (Packet packet = new Packet((int)ServerPackets.turn_end))
+            {
+                packet.Write(Server.clients[playerIdTurn].player.id);
+                packet.Write(Server.clients[playerIdTurn].player.username);
+                packet.Write(Server.clients[playerIdTurn].player.score);
+                packet.Write(guessWord.currentWord);
+
                 SendTCPDataToAll(packet);
             }
         }

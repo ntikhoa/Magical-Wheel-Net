@@ -9,18 +9,19 @@ namespace Server
     {
         welcome = 1,
         username_already_exist = 2,
-        game_start = 3,
-        player_turn = 4,
-        correct = 5,
-        incorrect = 6,
-        disqualify = 7,
-        end_rank = 8
+        inform_player = 3,
+        send_game_obj = 4,
+        turn_start = 5,
+        turn_end = 6,
+        disqualify = 8,
+        end_rank = 9
     }
 
     /// <summary>Sent from client to server.</summary>
     public enum ClientPackets
     {
-        register = 1
+        register = 1,
+        player_answer = 100
     }
 
     public class Packet : IDisposable
