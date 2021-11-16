@@ -61,7 +61,7 @@ public class Client : MonoBehaviour
     {
         public TcpClient socket;
 
-        private NetworkStream stream;
+        //private NetworkStream stream;
         private Packet receiveData;
         private byte[] receiveBuffer;
 
@@ -73,6 +73,7 @@ public class Client : MonoBehaviour
                 SendBufferSize = dataSize
 
             };
+            socket.Client.Blocking = false;
             receiveBuffer = new byte[dataSize];
             SocketDebug.Log("Begin Connect");
             socket.BeginConnect(instance.ip, instance.port, ConnectCallBack, socket);
@@ -95,7 +96,9 @@ public class Client : MonoBehaviour
             {
                 if (socket != null)
                 {
-                    stream.BeginWrite(_packet.ToArray(), 0, _packet.Length(), null, null);
+                    //stream.BeginWrite(_packet.ToArray(), 0, _packet.Length(), null, null);
+                    //Non Blocking
+                    socket.Client.BeginSend(_packet.ToArray(), 0, _packet.Length(), SocketFlags.None, null, null);
                 }
             }
             catch (Exception _ex)
@@ -109,15 +112,18 @@ public class Client : MonoBehaviour
             try
             {
                 SocketDebug.Log("Connect Call Back");
-                socket.EndConnect(_res);
+                //socket.EndConnect(_res);
+
                 if (!socket.Connected)
                 {
                     return;
                 }
-                stream = socket.GetStream();
+                //stream = socket.GetStream();
                 receiveData = new Packet();
                 SocketDebug.Log("Begin Read");
-                stream.BeginRead(receiveBuffer, 0, dataSize, ReceiveCallBack, null);
+                //stream.BeginRead(receiveBuffer, 0, dataSize, ReceiveCallBack, null);
+                //nNon Blocking
+                socket.Client.BeginReceive(receiveBuffer, 0, dataSize, SocketFlags.None, ReceiveCallBack, null);
             }
             catch(Exception ex)
             {
@@ -130,7 +136,9 @@ public class Client : MonoBehaviour
             SocketDebug.Log("Receive Call Back");
             try
             {
-                int _bytelength = stream.EndRead(_res);
+                //int _bytelength = stream.EndRead(_res);
+                //Non Blocking
+                int _bytelength = socket.Client.EndReceive(_res);
                 if(_bytelength == 0)
                 {
                     SocketDebug.Log("Length = 0");
@@ -140,7 +148,9 @@ public class Client : MonoBehaviour
                 byte[] _data = new byte[_bytelength];
                 Array.Copy(receiveBuffer, _data, _bytelength);
                 receiveData.Reset(CheckInvalidData(_data));
-                stream.BeginRead(receiveBuffer, 0, dataSize, ReceiveCallBack, null);
+                //stream.BeginRead(receiveBuffer, 0, dataSize, ReceiveCallBack, null);
+                //Non Blocking
+                socket.Client.BeginReceive(receiveBuffer, 0, dataSize, SocketFlags.None, ReceiveCallBack, null);
             }
             catch(Exception ex)
             {
