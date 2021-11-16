@@ -37,8 +37,47 @@ namespace Server
 
             if (allReady)
             {
-                GameLogic.SetState(STATE.Game_Start);
+                GameLogic.SetState(STATE.Waiting_Server);
             }
+        }
+
+        public static void Answer(int fromClient, Packet packet)
+        {
+            string guessChar = packet.ReadString();
+            string guessWord = packet.ReadString();
+
+            if (Server.clients[fromClient].player.turn > 2 
+                && guessWord != "")
+            {
+                //TODO check guess word
+            }
+            else
+            {
+                bool isCorrect = false;
+                String newCurrentWord = "";
+                for (int i = 0; i < GameLogic.guessWord.word.Length; i++)
+                {
+                    if (GameLogic.guessWord.currentWord[i] == '*'
+                        && guessChar.Contains(GameLogic.guessWord.word[i]))
+                    {
+                        isCorrect = true;
+                        newCurrentWord += guessChar;
+                    }
+                    else
+                    {
+                        newCurrentWord += GameLogic.guessWord.currentWord[i];
+                    }
+                }
+                if (isCorrect)
+                {
+                    Server.clients[fromClient].player.score += 1;
+                    //turn -= 1 and then turn += 1 at STATE Turn_End => player get another turn
+                    GameLogic.turn -= 1;
+                }
+                
+            }
+            Server.clients[fromClient].player.turn += 1;
+            GameLogic.SetState(STATE.Turn_End);
         }
     }
 }
