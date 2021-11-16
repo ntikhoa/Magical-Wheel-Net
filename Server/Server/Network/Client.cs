@@ -19,7 +19,7 @@ namespace Server
 
         public TcpClient socket;
 
-        private NetworkStream stream;
+        //private NetworkStream stream;
         private byte[] receiveBuffer;
         private Packet receivedData;
 
@@ -29,12 +29,14 @@ namespace Server
             socket.ReceiveBufferSize = dataBufferSize;
             socket.SendBufferSize = dataBufferSize;
 
-            stream = socket.GetStream();
+            //stream = socket.GetStream();
 
             receivedData = new Packet();
             receiveBuffer = new byte[dataBufferSize];
 
-            stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
+            //stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
+            //Non Blocking
+            socket.Client.BeginReceive(receiveBuffer, 0, dataBufferSize,SocketFlags.None, ReceiveCallback, null);
             Console.WriteLine($"Welcome { socket.Client.RemoteEndPoint} as player {id}");
             ServerSender.Welcome(id, PktMsg.WELCOME);
         }
@@ -43,7 +45,9 @@ namespace Server
         {
             try
             {
-                int byteLength = stream.EndRead(result);
+                //int byteLength = stream.EndRead(result);
+                //Non Blocking
+                int byteLength = socket.Client.EndReceive(result);
                 if (byteLength <= 0)
                 {
                     return;
@@ -54,7 +58,10 @@ namespace Server
 
                 receivedData.Reset(HandleData(data));
                 //handle data
-                stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
+                //stream.BeginRead(receiveBuffer, 0, dataBufferSize, ReceiveCallback, null);
+                //Non Blocking
+                socket.Client.BeginReceive(receiveBuffer, 0, dataBufferSize, SocketFlags.None, ReceiveCallback, null);
+
             }
             catch (Exception e)
             {
@@ -72,7 +79,9 @@ namespace Server
             {
                 if (socket != null)
                 {
-                    stream.BeginWrite(packet.ToArray(), 0, packet.Length(), null, null);
+                    //stream.BeginWrite(packet.ToArray(), 0, packet.Length(), null, null);
+                    //Non Blocking
+                    socket.Client.BeginSend(packet.ToArray(), 0, packet.Length(), SocketFlags.None, null, null);
                 }
             }
             catch (Exception e)

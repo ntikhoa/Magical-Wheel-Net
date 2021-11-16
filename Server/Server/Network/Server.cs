@@ -25,7 +25,7 @@ namespace Server
             InitializeClient();
 
             tcpListener = new TcpListener(IPAddress.Loopback, Port);
-            //tcpListener.Server.Blocking = false;
+            tcpListener.Server.Blocking = false;
             tcpListener.Start();
 
             tcpListener.BeginAcceptTcpClient(TcpConnectCallback, null);
