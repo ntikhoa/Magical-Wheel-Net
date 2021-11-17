@@ -48,7 +48,14 @@ public class Client : MonoBehaviour
     {
         packetHandlers = new Dictionary<int, PacketHandler>()
         {
-            { (int)ServerPackets.welcome, ClientHandle.Welcome }
+            { (int)ServerPackets.welcome, ClientHandle.Welcome },
+            { (int)ServerPackets.username_already_exist, ClientHandle.UsernameAlreadyExits },
+            { (int)ServerPackets.inform_player, ClientHandle.InformPlayer },
+            { (int)ServerPackets.send_game_obj, ClientHandle.SendGuessWord },
+            { (int)ServerPackets.turn_start, ClientHandle.SendTurnStart },
+            { (int)ServerPackets.turn_end, ClientHandle.SendTurnEnd },
+            { (int)ServerPackets.disqualify, ClientHandle.SendGuessWord },
+            { (int)ServerPackets.end_rank, ClientHandle.SendGuessWord },
         };
     }
 
