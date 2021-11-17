@@ -6,6 +6,7 @@ namespace Server
 {
     class GuessWord
     {
+        public static string UNKNOWN = "-";
         public string word;
         public string description;
         public string currentWord;
@@ -17,7 +18,7 @@ namespace Server
             description = _description;
             for (int i = 0; i < word.Length; i++)
             {
-                currentWord += "*";
+                currentWord += UNKNOWN;
             }
         }
     }

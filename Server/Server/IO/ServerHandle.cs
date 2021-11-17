@@ -49,7 +49,20 @@ namespace Server
             if (Server.clients[fromClient].player.turn > 2 
                 && guessWord != "")
             {
-                //TODO check guess word
+                if (guessWord == GameLogic.guessWord.word)
+                {
+                    Server.clients[fromClient].player.scoreGet = 5;
+                    Server.clients[fromClient].player.score += 5;
+                    //turn -= 1 and then turn += 1 at STATE Turn_End => player get another turn
+                    GameLogic.turn -= 1;
+
+                    //TODO set game end
+                }
+                else
+                {
+                    Server.clients[fromClient].player.disqualify = true;
+                    ServerSender.Disqualify(fromClient);
+                }
             }
             else
             {
@@ -57,8 +70,8 @@ namespace Server
                 String newCurrentWord = "";
                 for (int i = 0; i < GameLogic.guessWord.word.Length; i++)
                 {
-                    if (GameLogic.guessWord.currentWord[i] == '*'
-                        && guessChar.Contains(GameLogic.guessWord.word[i]))
+                    if (GameLogic.guessWord.currentWord[i].ToString() == GuessWord.UNKNOWN
+                        && guessChar == GameLogic.guessWord.word[i].ToString())
                     {
                         isCorrect = true;
                         newCurrentWord += guessChar;
@@ -68,15 +81,22 @@ namespace Server
                         newCurrentWord += GameLogic.guessWord.currentWord[i];
                     }
                 }
+                GameLogic.guessWord.currentWord = newCurrentWord;
+
                 if (isCorrect)
                 {
+                    Server.clients[fromClient].player.scoreGet = 1;
                     Server.clients[fromClient].player.score += 1;
                     //turn -= 1 and then turn += 1 at STATE Turn_End => player get another turn
                     GameLogic.turn -= 1;
                 }
+                else
+                {
+                    Server.clients[fromClient].player.scoreGet = 0;
+                }
                 
             }
-            Server.clients[fromClient].player.turn += 1;
+           
             GameLogic.SetState(STATE.Turn_End);
         }
     }

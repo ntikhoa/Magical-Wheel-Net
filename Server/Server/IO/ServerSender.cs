@@ -25,6 +25,7 @@ namespace Server
             }
         }
 
+        /*
         public static void InformPlayer()
         {
             using(Packet packet = new Packet((int)ServerPackets.inform_player))
@@ -38,6 +39,7 @@ namespace Server
                 SendTCPDataToAll(packet);
             }
         }
+        */
 
         public static void SendGuessWord(GuessWord guessWord, int timeout)
         {
@@ -57,6 +59,7 @@ namespace Server
             {
                 packet.Write(Server.clients[playerIdTurn].player.id);
                 packet.Write(Server.clients[playerIdTurn].player.username);
+                packet.Write(Server.clients[playerIdTurn].player.turn);
 
                 SendTCPDataToAll(packet);
             }
@@ -68,8 +71,35 @@ namespace Server
             {
                 packet.Write(Server.clients[playerIdTurn].player.id);
                 packet.Write(Server.clients[playerIdTurn].player.username);
-                packet.Write(Server.clients[playerIdTurn].player.score);
+                packet.Write(Server.clients[playerIdTurn].player.scoreGet);
                 packet.Write(guessWord.currentWord);
+
+                SendTCPDataToAll(packet);
+            }
+        }
+
+        public static void Disqualify(int playerId)
+        {
+            using (Packet packet = new Packet((int)ServerPackets.disqualify))
+            {
+                packet.Write(playerId);
+                packet.Write(Server.clients[playerId].player.username);
+
+                SendTCPDataToAll(packet);
+            }
+        }
+
+        public static void SendRank(List<Player> rank)
+        {
+            using (Packet packet = new Packet((int)ServerPackets.end_rank))
+            {
+                packet.Write(rank.Count);
+                for (int i = 0; i< rank.Count; i++)
+                {
+                    packet.Write(rank[i].id);
+                    packet.Write(rank[i].username);
+                    packet.Write(rank[i].score);
+                }
 
                 SendTCPDataToAll(packet);
             }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading;
+using System.Collections;
 
 namespace Server
 {
@@ -72,8 +73,8 @@ namespace Server
             //Check if server want to start or quit
             Console.WriteLine("Waiting Server");
 
-            ServerSender.InformPlayer();
-            Thread.Sleep(5000);
+            //ServerSender.InformPlayer();
+            Thread.Sleep(3000);
             SetState(STATE.Game_Start);
         }
 
@@ -95,6 +96,12 @@ namespace Server
             Console.WriteLine("Turn Start");
 
             int playerIdTurn = turn % Server.clients.Count;
+            if(Server.clients[playerIdTurn].player.disqualify)
+            {
+                turn += 1;
+                SetState(STATE.Turn_Start);
+                return;
+            }
 
             ServerSender.SendTurnStart(playerIdTurn);
         }
@@ -104,17 +111,50 @@ namespace Server
             Console.WriteLine("Turn End");
 
             int playerIdTurn = turn % Server.clients.Count;
+
             ServerSender.SendTurnEnd(playerIdTurn, guessWord);
 
-            //TODO: check game end
-
+            Server.clients[playerIdTurn].player.turn += 1;
             turn += 1;
+            
+            if (turn > endTurn || guessWord.word == guessWord.currentWord)
+            {
+                SetState(STATE.Game_End);
+                return;
+            }
             SetState(STATE.Turn_Start);
         }
         private static void GameEnd()
         {
             //display result, waiting for server
             Console.WriteLine("Game End");
+
+            var rank = new List<Player>();
+            
+            //init
+            for (int i = 0; i < Server.clients.Count; i++)
+            {
+                rank.Add(Server.clients[i].player);
+            }
+
+            //sort
+            for (int i = 0; i < rank.Count; i++)
+            {
+                for (int j = i + 1; j < rank.Count; j++)
+                {
+                    if (rank[i].score < rank[j].score)
+                    {
+                        Player temp = rank[i];
+                        rank[i] = rank[j];
+                        rank[j] = temp;
+                    }
+                }
+            }
+
+            ServerSender.SendRank(rank);
+            Thread.Sleep(3000);
+
+            //TODO: restart game, init players stat,...
         }
         private static void UpdateState()
         {
