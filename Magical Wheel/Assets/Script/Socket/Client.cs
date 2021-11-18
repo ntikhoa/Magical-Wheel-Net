@@ -83,7 +83,15 @@ public class Client : MonoBehaviour
             socket.Client.Blocking = false;
             receiveBuffer = new byte[dataSize];
             SocketDebug.Log("Begin Connect");
-            socket.BeginConnect(instance.ip, instance.port, ConnectCallBack, socket);
+            try
+            {
+                socket.BeginConnect(instance.ip, instance.port, ConnectCallBack, socket);
+            }
+            catch (Exception e)
+            {
+                SocketDebug.Log(e.Message);
+                Disconnect();                
+            }
         }
         public void Disconnect()
         {
@@ -95,6 +103,10 @@ public class Client : MonoBehaviour
                     SocketDebug.Log("Close Connection");
                 }
             }
+            receiveData = null;
+            receiveBuffer = null;
+            socket = null;
+            UIManager.instance.State = STATE.Register;
         }
 
         public void SendData(Packet _packet)
@@ -111,6 +123,7 @@ public class Client : MonoBehaviour
             catch (Exception _ex)
             {
                 SocketDebug.Log($"Error sending data to server via TCP: {_ex}");
+                Disconnect();
             }
         }
 
@@ -119,7 +132,7 @@ public class Client : MonoBehaviour
             try
             {
                 SocketDebug.Log("Connect Call Back");
-                //socket.EndConnect(_res);
+                socket.EndConnect(_res);
 
                 if (!socket.Connected)
                 {
@@ -131,6 +144,15 @@ public class Client : MonoBehaviour
                 //stream.BeginRead(receiveBuffer, 0, dataSize, ReceiveCallBack, null);
                 //nNon Blocking
                 socket.Client.BeginReceive(receiveBuffer, 0, dataSize, SocketFlags.None, ReceiveCallBack, null);
+            }
+            catch(SocketException ex)
+            {
+                SocketDebug.Log(ex.Message);
+                SocketError s_er = ex.SocketErrorCode;
+                if (s_er == SocketError.WouldBlock)
+                {
+                    socket.BeginConnect(instance.ip, instance.port, ConnectCallBack, socket);
+                }
             }
             catch(Exception ex)
             {
