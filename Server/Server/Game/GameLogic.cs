@@ -21,6 +21,7 @@ namespace Server
         public static int timeout = 10; //in seconds
         public static int turn = 0;
         public static int endTurn = Server.MaxPlayers * 5 - 1;
+        
 
         private static STATE state = STATE.Waiting_Player; //Current state of the game server
         private static Dictionary<int, Action> stateActions;
@@ -96,7 +97,10 @@ namespace Server
             Console.WriteLine("Turn Start");
 
             int playerIdTurn = turn % Server.clients.Count;
-            if(Server.clients[playerIdTurn].player.disqualify)
+
+            Console.WriteLine($"Player's turn: {playerIdTurn}");
+            
+            if (Server.clients[playerIdTurn].player.disqualify)
             {
                 turn += 1;
                 SetState(STATE.Turn_Start);
@@ -112,18 +116,26 @@ namespace Server
 
             int playerIdTurn = turn % Server.clients.Count;
 
-            ServerSender.SendTurnEnd(playerIdTurn, guessWord);
-
-            Server.clients[playerIdTurn].player.turn += 1;
-            turn += 1;
-            
-            if (turn > endTurn || guessWord.word == guessWord.currentWord)
+            if (!Server.clients[playerIdTurn].player.disqualify)
             {
-                SetState(STATE.Game_End);
-                return;
+                ServerSender.SendTurnEnd(playerIdTurn, guessWord);
+
+                Server.clients[playerIdTurn].player.turn += 1;
+
+                //player guess wrong and not disqualify, increment total turn by one
+                if (Server.clients[playerIdTurn].player.scoreGet == 0)
+                    turn += 1;
+
+                if (turn > endTurn || guessWord.word == guessWord.currentWord)
+                {
+                    SetState(STATE.Game_End);
+                    return;
+                }
             }
+
             SetState(STATE.Turn_Start);
         }
+
         private static void GameEnd()
         {
             //display result, waiting for server
