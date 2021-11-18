@@ -50,10 +50,11 @@ public class ClientHandle : MonoBehaviour
         if (Client.instance.id == _testId && Client.instance.userName == _testName)
         {
             UIManager.instance.State = STATE.Play_Turn;
+            UIManager.instance.DisplayServerMessage(" Your turn.");
         }
         else
         {
-            UIManager.instance.State = STATE.Play_Turn;
+            UIManager.instance.State = STATE.Play_Wait;
         }
     }
 
