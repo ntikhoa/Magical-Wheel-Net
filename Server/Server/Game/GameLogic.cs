@@ -1,8 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using System.Threading;
-using System.Collections;
 
 namespace Server
 {
@@ -25,7 +22,7 @@ namespace Server
         
 
         private static STATE state = STATE.Waiting_Player; //Current state of the game server
-        private static Dictionary<int, Action> stateActions;
+        private static Dictionary<int, State> stateActions;
 
         public static void Update()
         {
@@ -40,158 +37,25 @@ namespace Server
 
         private static void ServerUpdate()
         {
-            ThreadManager.ExecuteOnMainThread(stateActions[(int)state]);
+            ThreadManager.ExecuteOnMainThread(stateActions[(int)state].Action);
             ThreadManager.ExecuteOnMainThread(UpdateState);
         }
         public static void InitGame()
         {
             //Prepare game server (loading game, etc)
-            stateActions = new Dictionary<int, Action>
+            stateActions = new Dictionary<int, State>
             {
-                {(int)STATE.Waiting_Player, WaitingPlayer },
-                {(int)STATE.Waiting_Server, WaitingServer },
-                {(int)STATE.Game_Start, GameStart },
-                {(int)STATE.Turn_Start, TurnStart },
-                {(int)STATE.Turn_End, TurnEnd },
-                {(int)STATE.Game_End, GameEnd }
+                {(int)STATE.Waiting_Player, new WaitingPlayerState() },
+                {(int)STATE.Waiting_Server, new WaitingServerState() },
+                {(int)STATE.Game_Start, new GameStartState() },
+                {(int)STATE.Turn_Start, new TurnStartState() },
+                {(int)STATE.Turn_End, new TurnEndState() },
+                {(int)STATE.Game_End, new GameEndState() }
             };
 
             ServerUpdate();
         }
-        private static void WaitingPlayer()
-        {
-            Console.WriteLine("Waiting Player");
-            
-            for (int i = 0; i < Server.clients.Count; i++)
-            {
-                if (Server.clients[i].player.id != -1)
-                {
-                    Console.WriteLine($"{Server.clients[i].player.username} is ready! (Player's ID: {Server.clients[i].player.id})");
-                }
-            }
-        }
-        private static void WaitingServer()
-        {
-            //Check if server want to start or quit
-            Console.WriteLine("Waiting Server");
-
-            ServerSender.InformPlayer();
-            Thread.Sleep(5000);
-            SetState(STATE.Game_Start);
-        }
-
-        private static void GameStart()
-        {
-            //SetupGame, start score
-            Console.WriteLine("Game Start");
-
-            var words = new List<GuessWord>();
-            string[] lines = System.IO.File.ReadAllLines(@"database.txt");
-            int count = Int32.Parse(lines[0]);
-            int c = 1;
-            for (int i = 0; i < count; i++)
-            {
-                string word = lines[c++];
-                string description = lines[c++];
-                words.Add(new GuessWord(word, description));
-            }
-            Random r = new Random();
-            int rInt = r.Next(0, count);
-
-
-            guessWord = words[rInt];
-            ServerSender.SendGuessWord(guessWord, timeout);
-            Thread.Sleep(2000);
-
-            SetState(STATE.Turn_Start);
-        }
-        private static void TurnStart()
-        {
-            //Inform a player about their turn, start timer, wait answer
-            //Wait for player to take their turn
-            Console.WriteLine("Turn Start");
-
-            int playerIdTurn = turn % Server.clients.Count;
-
-            Console.WriteLine($"Player's turn: {playerIdTurn}");
-            
-            if (Server.clients[playerIdTurn].player.disqualify)
-            {
-                turn += 1;
-                SetState(STATE.Turn_Start);
-                return;
-            }
-
-            ServerSender.SendTurnStart(playerIdTurn);
-        }
-        private static void TurnEnd()
-        {
-            //Update result, score, turn count, player turn
-            Console.WriteLine("Turn End");
-
-            int playerIdTurn = turn % Server.clients.Count;
-
-            if (!Server.clients[playerIdTurn].player.disqualify)
-            {
-                ServerSender.SendTurnEnd(playerIdTurn, guessWord);
-
-                Server.clients[playerIdTurn].player.turn += 1;
-
-                //player guess wrong and not disqualify, increment total turn by one
-                if (Server.clients[playerIdTurn].player.scoreGet == 0)
-                    turn += 1;
-
-                if (turn > endTurn || guessWord.word == guessWord.currentWord)
-                {
-                    SetState(STATE.Game_End);
-                    return;
-                }
-            }
-
-            SetState(STATE.Turn_Start);
-        }
-
-        private static void GameEnd()
-        {
-            //display result, waiting for server
-            Console.WriteLine("Game End");
-
-            var rank = new List<Player>();
-            
-            //init
-            for (int i = 0; i < Server.clients.Count; i++)
-            {
-                rank.Add(Server.clients[i].player);
-            }
-
-            //sort
-            for (int i = 0; i < rank.Count; i++)
-            {
-                for (int j = i + 1; j < rank.Count; j++)
-                {
-                    if (rank[i].score < rank[j].score)
-                    {
-                        Player temp = rank[i];
-                        rank[i] = rank[j];
-                        rank[j] = temp;
-                    }
-                }
-            }
-
-            ServerSender.SendRank(rank);
-
-            //reset all
-            for (int i = 0; i < Server.clients.Count; i++)
-            {
-                Server.clients[i].player.ResetPlayerStat();
-            }
-            timeout = 10; //in seconds
-            turn = 0;
-            endTurn = Server.MaxPlayers * 5 - 1;
-            lastGuess = "";
-
-            SetState(STATE.Game_Start);
-    }
+     
         private static void UpdateState()
         {
             //update State

@@ -29,7 +29,6 @@ namespace Server
 
             Server.Start(5, 26950);
 
-
             //read command from server
             while (isRunning)
             {
@@ -37,8 +36,6 @@ namespace Server
                 {
                     command = Console.ReadLine();
                     commandToExecute = commandActions.ContainsKey(command);
-
-                    GameLogic.SetState(STATE.Waiting_Server);
                 }
             }
         }

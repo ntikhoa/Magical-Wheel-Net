@@ -51,7 +51,7 @@ namespace Server
 
             packetHandlers = new Dictionary<int, PacketHandler>()
             {
-                { (int)ClientPackets.register, ServerHandle.Register }
+                { (int)ClientPackets.register, ServerReceive.Register }
             };
 
         }
