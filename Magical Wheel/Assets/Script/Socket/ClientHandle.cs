@@ -73,5 +73,6 @@ public class ClientHandle : MonoBehaviour
         {
             UIManager.instance.DisplayServerMessage($"You have scored {_pscore} points.");
         }
+        UIManager.instance.updateAnswer(_pword);
     }
 }
