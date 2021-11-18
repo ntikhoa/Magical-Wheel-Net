@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Server
 {
-    class ServerReceive
+    class ServerReceiver
     {
         public static void Register(int fromClient, Packet packet)
         {
