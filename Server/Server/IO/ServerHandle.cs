@@ -53,13 +53,11 @@ namespace Server
                 {
                     Server.clients[fromClient].player.scoreGet = 5;
                     Server.clients[fromClient].player.score += 5;
-                    //turn -= 1 and then turn += 1 at STATE Turn_End => player get another turn
-                    GameLogic.turn -= 1;
-
-                    //TODO set game end
+                    GameLogic.guessWord.currentWord = guessWord;
                 }
                 else
                 {
+                    Server.clients[fromClient].player.scoreGet = 0;
                     Server.clients[fromClient].player.disqualify = true;
                     ServerSender.Disqualify(fromClient);
                 }
@@ -87,8 +85,6 @@ namespace Server
                 {
                     Server.clients[fromClient].player.scoreGet = 1;
                     Server.clients[fromClient].player.score += 1;
-                    //turn -= 1 and then turn += 1 at STATE Turn_End => player get another turn
-                    GameLogic.turn -= 1;
                 }
                 else
                 {
