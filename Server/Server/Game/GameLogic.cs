@@ -85,7 +85,21 @@ namespace Server
             //SetupGame, start score
             Console.WriteLine("Game Start");
 
-            guessWord = new GuessWord("python", "Worst Programming Language!!!");
+            var words = new List<GuessWord>();
+            string[] lines = System.IO.File.ReadAllLines(@"database.txt");
+            int count = Int32.Parse(lines[0]);
+            int c = 1;
+            for (int i = 0; i < count; i++)
+            {
+                string word = lines[c++];
+                string description = lines[c++];
+                words.Add(new GuessWord(word, description));
+            }
+            Random r = new Random();
+            int rInt = r.Next(0, count);
+
+
+            guessWord = words[rInt];
             ServerSender.SendGuessWord(guessWord, timeout);
             Thread.Sleep(2000);
 
