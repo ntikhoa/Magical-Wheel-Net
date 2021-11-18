@@ -9,7 +9,7 @@ namespace Server
     {
         welcome = 1,
         username_already_exist = 2,
-        //inform_player = 3,
+        inform_player = 3,
         send_game_obj = 4,
         turn_start = 5,
         turn_end = 6,

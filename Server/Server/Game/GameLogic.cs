@@ -17,6 +17,7 @@ namespace Server
     }
     class GameLogic
     {
+        public static string lastGuess = "";
         public static GuessWord guessWord;
         public static int timeout = 10; //in seconds
         public static int turn = 0;
@@ -74,8 +75,8 @@ namespace Server
             //Check if server want to start or quit
             Console.WriteLine("Waiting Server");
 
-            //ServerSender.InformPlayer();
-            Thread.Sleep(3000);
+            ServerSender.InformPlayer();
+            Thread.Sleep(5000);
             SetState(STATE.Game_Start);
         }
 
@@ -164,10 +165,19 @@ namespace Server
             }
 
             ServerSender.SendRank(rank);
-            Thread.Sleep(3000);
 
-            //TODO: restart game, init players stat,...
-        }
+            //reset all
+            for (int i = 0; i < Server.clients.Count; i++)
+            {
+                Server.clients[i].player.ResetPlayerStat();
+            }
+            timeout = 10; //in seconds
+            turn = 0;
+            endTurn = Server.MaxPlayers * 5 - 1;
+            lastGuess = "";
+
+            SetState(STATE.Game_Start);
+    }
         private static void UpdateState()
         {
             //update State
