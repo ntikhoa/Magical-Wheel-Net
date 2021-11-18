@@ -23,5 +23,13 @@ namespace Server
             turn = 1;
             disqualify = false;
         }
+
+        public void ResetPlayerStat()
+        {
+            score = 0;
+            scoreGet = 0;
+            turn = 1;
+            disqualify = false;
+        }
     }
 }

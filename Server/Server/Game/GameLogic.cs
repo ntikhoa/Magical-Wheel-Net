@@ -17,6 +17,7 @@ namespace Server
     }
     class GameLogic
     {
+        public static string lastGuess = "";
         public static GuessWord guessWord;
         public static int timeout = 10; //in seconds
         public static int turn = 0;
@@ -74,8 +75,8 @@ namespace Server
             //Check if server want to start or quit
             Console.WriteLine("Waiting Server");
 
-            //ServerSender.InformPlayer();
-            Thread.Sleep(3000);
+            ServerSender.InformPlayer();
+            Thread.Sleep(5000);
             SetState(STATE.Game_Start);
         }
 
@@ -84,7 +85,21 @@ namespace Server
             //SetupGame, start score
             Console.WriteLine("Game Start");
 
-            guessWord = new GuessWord("python", "Worst Programming Language!!!");
+            var words = new List<GuessWord>();
+            string[] lines = System.IO.File.ReadAllLines(@"database.txt");
+            int count = Int32.Parse(lines[0]);
+            int c = 1;
+            for (int i = 0; i < count; i++)
+            {
+                string word = lines[c++];
+                string description = lines[c++];
+                words.Add(new GuessWord(word, description));
+            }
+            Random r = new Random();
+            int rInt = r.Next(0, count);
+
+
+            guessWord = words[rInt];
             ServerSender.SendGuessWord(guessWord, timeout);
             Thread.Sleep(2000);
 
@@ -164,10 +179,19 @@ namespace Server
             }
 
             ServerSender.SendRank(rank);
-            Thread.Sleep(3000);
 
-            //TODO: restart game, init players stat,...
-        }
+            //reset all
+            for (int i = 0; i < Server.clients.Count; i++)
+            {
+                Server.clients[i].player.ResetPlayerStat();
+            }
+            timeout = 10; //in seconds
+            turn = 0;
+            endTurn = Server.MaxPlayers * 5 - 1;
+            lastGuess = "";
+
+            SetState(STATE.Game_Start);
+    }
         private static void UpdateState()
         {
             //update State

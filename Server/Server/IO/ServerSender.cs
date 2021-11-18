@@ -25,7 +25,6 @@ namespace Server
             }
         }
 
-        /*
         public static void InformPlayer()
         {
             using(Packet packet = new Packet((int)ServerPackets.inform_player))
@@ -39,7 +38,6 @@ namespace Server
                 SendTCPDataToAll(packet);
             }
         }
-        */
 
         public static void SendGuessWord(GuessWord guessWord, int timeout)
         {
@@ -73,6 +71,7 @@ namespace Server
                 packet.Write(Server.clients[playerIdTurn].player.username);
                 packet.Write(Server.clients[playerIdTurn].player.scoreGet);
                 packet.Write(guessWord.currentWord);
+                packet.Write(GameLogic.lastGuess);
 
                 SendTCPDataToAll(packet);
             }

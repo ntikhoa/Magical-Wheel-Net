@@ -49,6 +49,7 @@ namespace Server
             if (Server.clients[fromClient].player.turn > 2 
                 && guessWord != "")
             {
+                GameLogic.lastGuess = guessWord;
                 if (guessWord == GameLogic.guessWord.word)
                 {
                     Server.clients[fromClient].player.scoreGet = 5;
@@ -64,8 +65,9 @@ namespace Server
             }
             else
             {
+                GameLogic.lastGuess = guessChar;
                 bool isCorrect = false;
-                String newCurrentWord = "";
+                string newCurrentWord = "";
                 for (int i = 0; i < GameLogic.guessWord.word.Length; i++)
                 {
                     if (GameLogic.guessWord.currentWord[i].ToString() == GuessWord.UNKNOWN
