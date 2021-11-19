@@ -24,7 +24,7 @@ namespace Server
                 if (Server.clients[playerIdTurn].player.scoreGet == 0)
                     GameLogic.turn += 1;
 
-                if (GameLogic.turn > GameLogic.endTurn 
+                if (GameLogic.turn > GameLogic.endGameTurn 
                     || GameLogic.guessWord.word == GameLogic.guessWord.currentWord)
                 {
                     GameLogic.SetState(STATE.Game_End);

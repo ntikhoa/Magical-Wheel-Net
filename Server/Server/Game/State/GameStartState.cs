@@ -11,7 +11,8 @@ namespace Server
         {
             //SetupGame, start score
             Console.WriteLine("Game Start");
-
+            GameLogic.endGameTurn = Server.MaxPlayers * 5 - 1;
+            Console.WriteLine(Server.MaxPlayers);
             GameLogic.guessWord = GetRandomGuessWord();
 
             ServerSender.SendGuessWord(GameLogic.guessWord, GameLogic.timeout);

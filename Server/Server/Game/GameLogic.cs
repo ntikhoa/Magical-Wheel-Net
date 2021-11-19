@@ -18,7 +18,7 @@ namespace Server
         public static GuessWord guessWord;
         public static int timeout = 10; //in seconds
         public static int turn = 0;
-        public static int endTurn = Server.MaxPlayers * 5 - 1;
+        public static int endGameTurn;
         
 
         private static STATE state = STATE.Waiting_Player; //Current state of the game server
