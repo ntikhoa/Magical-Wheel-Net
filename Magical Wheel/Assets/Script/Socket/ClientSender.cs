@@ -21,5 +21,15 @@ public class ClientSender : MonoBehaviour
             SendTCPData(_packet);
         }
     }
+    public static void Answer(string _letter, string _word)
+    {
+        using (Packet _packet = new Packet((int)ClientPackets.register))
+        {
+            _packet.Write(_letter);
+            _packet.Write(_word);
+
+            SendTCPData(_packet);
+        }
+    }
     #endregion
 }

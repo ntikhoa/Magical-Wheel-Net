@@ -49,8 +49,8 @@ public class ClientHandle : MonoBehaviour
         string _testName = _packet.ReadString();
         if (Client.instance.id == _testId && Client.instance.userName == _testName)
         {
+            //UIManager.instance.DisplayServerMessage(" Your turn.");
             UIManager.instance.State = STATE.Play_Turn;
-            UIManager.instance.DisplayServerMessage(" Your turn.");
         }
         else
         {
@@ -64,15 +64,55 @@ public class ClientHandle : MonoBehaviour
         string _pname = _packet.ReadString();
         int _pscore = _packet.ReadInt();
         string _pword = _packet.ReadString();
+        string _pguess = _packet.ReadString();
 
         if(Client.instance.id != _pid)
         {
-            UIManager.instance.DisplayServerMessage($"Player {_pname} has scored {_pscore} points.");
+            UIManager.instance.DisplayServerMessage($"Player {_pname} guessed [{_pguess}] and scored {_pscore} points.");
         }
         else
         {
             UIManager.instance.DisplayServerMessage($"You have scored {_pscore} points.");
         }
         UIManager.instance.updateAnswer(_pword);
+        UIManager.instance.State = STATE.Play_Wait;
+    }
+
+    public static void Disqualify(Packet _packet)
+    {
+        int _pid = _packet.ReadInt();
+        string _pname = _packet.ReadString();
+        if(Client.instance.id == _pid)
+        {
+            UIManager.instance.DisplayServerMessage($"You have been disqualified.");
+            UIManager.instance.State = STATE.Disqualify;
+        }
+        else
+        {
+            UIManager.instance.DisplayServerMessage($"Player {_pname} has been disqualified.");
+        }
+    }
+
+    public static void SendRank(Packet _packet)
+    {
+        string _msg = " Result: \n";
+        int _count = _packet.ReadInt();
+        for (int i = 0; i < _count; i++)
+        {
+            int _pid = _packet.ReadInt();
+            string _pname = _packet.ReadString();
+            int _pscore = _packet.ReadInt();
+            if(_pid == Client.instance.id)
+            {
+                _msg = _msg + $"{i}: You: {_pscore}\n";
+            }
+            else
+            {
+                _msg = _msg + $"{i}: {_pname}: {_pscore}\n";
+            }
+        }
+        UIManager.instance.DisplayServerMessage(_msg);
+        UIManager.instance.State = STATE.End_Game;
+
     }
 }

@@ -1096,7 +1096,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Notice: '
+  m_Text: 'Server: '
 --- !u!222 &280868053
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2252,7 +2252,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: 'Notice: '
+  m_Text: 'Server: '
 --- !u!222 &1101992718
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -2883,7 +2883,7 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 1592780972}
         m_TargetAssemblyTypeName: UIManager, Assembly-CSharp
-        m_MethodName: ConnectedToServer
+        m_MethodName: Answer
         m_Mode: 1
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
@@ -3135,10 +3135,10 @@ MonoBehaviour:
   - {fileID: 192940232}
   - {fileID: 65255337}
   userNameInp: {fileID: 2100289175}
-  conBtn: {fileID: 159797517}
+  conBtn: {fileID: 159797519}
   answerLetter: {fileID: 1685354255}
   answerWord: {fileID: 659056733}
-  ansBtn: {fileID: 1520014292}
+  ansBtn: {fileID: 1520014294}
   curWord: {fileID: 1996300209}
   timer: {fileID: 528016762}
   hint: {fileID: 1540709585}

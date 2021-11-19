@@ -106,6 +106,7 @@ public class Client : MonoBehaviour
             receiveData = null;
             receiveBuffer = null;
             socket = null;
+            SocketDebug.Log("Go Register");
             UIManager.instance.State = STATE.Register;
         }
 
@@ -151,12 +152,19 @@ public class Client : MonoBehaviour
                 SocketError s_er = ex.SocketErrorCode;
                 if (s_er == SocketError.WouldBlock)
                 {
+                    SocketDebug.Log($"would block: {s_er}");
                     socket.BeginConnect(instance.ip, instance.port, ConnectCallBack, socket);
+                }
+                else
+                {
+                    SocketDebug.Log($"not would block: {s_er}");
+                    Disconnect();
                 }
             }
             catch(Exception ex)
             {
                 SocketDebug.Log(ex.Message);
+                Disconnect();
             }
         }
 
