@@ -6,11 +6,10 @@ public class ClientHandle : MonoBehaviour
 {
     public static void Welcome(Packet _packet)
     {
-        SocketDebug.Log("Welcome Get");
         string _msg = _packet.ReadString();
         int _myId = _packet.ReadInt();
 
-        SocketDebug.Log($"Message from server: {_msg}");
+        //SocketDebug.Log($"Message from server: {_msg}");
         UIManager.instance.DisplayServerMessage(_msg);
         Client.instance.id = _myId;
         ClientSender.WelcomeReceived();
@@ -19,7 +18,7 @@ public class ClientHandle : MonoBehaviour
     public static void UsernameAlreadyExits(Packet _packet)
     {
         string _msg = _packet.ReadString();
-        SocketDebug.Log($"Message from server: {_msg}");
+        //SocketDebug.Log($"Message from server: {_msg}");
         UIManager.instance.DisplayServerMessage(_msg);
         UIManager.instance.State = STATE.Register;
     }
@@ -32,6 +31,7 @@ public class ClientHandle : MonoBehaviour
             _packet.ReadInt();
             _packet.ReadString();
         }
+        //SocketDebug.Log(_count.ToString() + " players have joined");
         UIManager.instance.DisplayServerMessage(_count.ToString() + " players have joined");
     }
 
@@ -40,21 +40,25 @@ public class ClientHandle : MonoBehaviour
         int characterLimit = _packet.ReadInt();
         string hint = _packet.ReadString();
         int timeOut = _packet.ReadInt();
+        //SocketDebug.Log(hint + " Get");
         UIManager.instance.GameStart(characterLimit, hint, timeOut);
     }
 
     public static void SendTurnStart(Packet _packet)
     {
         int _testId = _packet.ReadInt();
+        //SocketDebug.Log(_testId.ToString() + " Get");
         string _testName = _packet.ReadString();
         if (Client.instance.id == _testId && Client.instance.userName == _testName)
         {
             //UIManager.instance.DisplayServerMessage(" Your turn.");
+            SocketDebug.Log(_testId.ToString() + " your turn");
             UIManager.instance.State = STATE.Play_Turn;
         }
         else
         {
             UIManager.instance.State = STATE.Play_Wait;
+            //SocketDebug.Log(_testId.ToString() + " turn");
         }
     }
 
@@ -76,6 +80,7 @@ public class ClientHandle : MonoBehaviour
         }
         UIManager.instance.updateAnswer(_pword);
         UIManager.instance.State = STATE.Play_Wait;
+        //SocketDebug.Log($"update to {_pword} after {_pname} guessing {_pguess}");
     }
 
     public static void Disqualify(Packet _packet)
@@ -91,6 +96,7 @@ public class ClientHandle : MonoBehaviour
         {
             UIManager.instance.DisplayServerMessage($"Player {_pname} has been disqualified.");
         }
+        //SocketDebug.Log($"{_pname} disqualified");
     }
 
     public static void SendRank(Packet _packet)
@@ -112,6 +118,7 @@ public class ClientHandle : MonoBehaviour
             }
         }
         UIManager.instance.DisplayServerMessage(_msg);
+        //SocketDebug.Log(_msg);
         UIManager.instance.State = STATE.End_Game;
 
     }

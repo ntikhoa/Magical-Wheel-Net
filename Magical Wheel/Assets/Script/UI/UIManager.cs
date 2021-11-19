@@ -220,6 +220,14 @@ public class UIManager : MonoBehaviour
     }
     public void Answer()
     {
+        if(answerLetter.text == null)
+        {
+            answerLetter.text = "";
+        }
+        if(answerWord.text == null)
+        {
+            answerWord.text = "";
+        }
         ClientSender.Answer(answerLetter.text, answerWord.text);
         State = STATE.Play_Wait;
     }

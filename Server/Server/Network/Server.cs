@@ -51,7 +51,8 @@ namespace Server
 
             packetHandlers = new Dictionary<int, PacketHandler>()
             {
-                { (int)ClientPackets.register, ServerReceiver.Register }
+                { (int)ClientPackets.register, ServerReceiver.Register },
+                { (int)ClientPackets.player_answer, ServerReceiver.Answer }
             };
 
         }

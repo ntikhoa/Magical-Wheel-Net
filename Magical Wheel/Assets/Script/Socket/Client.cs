@@ -82,14 +82,14 @@ public class Client : MonoBehaviour
             };
             socket.Client.Blocking = false;
             receiveBuffer = new byte[dataSize];
-            SocketDebug.Log("Begin Connect");
+            //SocketDebug.Log("Begin Connect");
             try
             {
                 socket.BeginConnect(instance.ip, instance.port, ConnectCallBack, socket);
             }
             catch (Exception e)
             {
-                SocketDebug.Log(e.Message);
+               //SocketDebug.Log(e.Message);
                 Disconnect();                
             }
         }
@@ -100,13 +100,13 @@ public class Client : MonoBehaviour
                 if (socket.Connected)
                 {
                     socket.Close();
-                    SocketDebug.Log("Close Connection");
+                    //SocketDebug.Log("Close Connection");
                 }
             }
             receiveData = null;
             receiveBuffer = null;
             socket = null;
-            SocketDebug.Log("Go Register");
+            //SocketDebug.Log("Go Register");
             UIManager.instance.State = STATE.Register;
         }
 
@@ -123,7 +123,7 @@ public class Client : MonoBehaviour
             }
             catch (Exception _ex)
             {
-                SocketDebug.Log($"Error sending data to server via TCP: {_ex}");
+                //SocketDebug.Log($"Error sending data to server via TCP: {_ex}");
                 Disconnect();
             }
         }
@@ -132,7 +132,7 @@ public class Client : MonoBehaviour
         {
             try
             {
-                SocketDebug.Log("Connect Call Back");
+                //SocketDebug.Log("Connect Call Back");
                 socket.EndConnect(_res);
 
                 if (!socket.Connected)
@@ -141,36 +141,36 @@ public class Client : MonoBehaviour
                 }
                 //stream = socket.GetStream();
                 receiveData = new Packet();
-                SocketDebug.Log("Begin Read");
+                //SocketDebug.Log("Begin Read");
                 //stream.BeginRead(receiveBuffer, 0, dataSize, ReceiveCallBack, null);
                 //nNon Blocking
                 socket.Client.BeginReceive(receiveBuffer, 0, dataSize, SocketFlags.None, ReceiveCallBack, null);
             }
             catch(SocketException ex)
             {
-                SocketDebug.Log(ex.Message);
+                //SocketDebug.Log(ex.Message);
                 SocketError s_er = ex.SocketErrorCode;
                 if (s_er == SocketError.WouldBlock)
                 {
-                    SocketDebug.Log($"would block: {s_er}");
+                    //SocketDebug.Log($"would block: {s_er}");
                     socket.BeginConnect(instance.ip, instance.port, ConnectCallBack, socket);
                 }
                 else
                 {
-                    SocketDebug.Log($"not would block: {s_er}");
+                    //SocketDebug.Log($"not would block: {s_er}");
                     Disconnect();
                 }
             }
             catch(Exception ex)
             {
-                SocketDebug.Log(ex.Message);
+                //SocketDebug.Log(ex.Message);
                 Disconnect();
             }
         }
 
         private void ReceiveCallBack(IAsyncResult _res)
         {
-            SocketDebug.Log("Receive Call Back");
+            //SocketDebug.Log("Receive Call Back");
             try
             {
                 //int _bytelength = stream.EndRead(_res);
@@ -178,7 +178,7 @@ public class Client : MonoBehaviour
                 int _bytelength = socket.Client.EndReceive(_res);
                 if(_bytelength == 0)
                 {
-                    SocketDebug.Log("Length = 0");
+                    //SocketDebug.Log("Length = 0");
                     return;
                 }
 
@@ -191,7 +191,7 @@ public class Client : MonoBehaviour
             }
             catch(Exception ex)
             {
-                SocketDebug.Log(ex.Message);
+                //SocketDebug.Log(ex.Message);
                 Disconnect();
             }
         }

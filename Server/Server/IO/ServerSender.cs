@@ -113,7 +113,7 @@ namespace Server
         private static void SendTCPDataToAll(Packet packet)
         {
             packet.WriteLength();
-            for (int i = 1; i <= Server.MaxPlayers; i++)
+            for (int i = 0; i < Server.MaxPlayers; i++)
             {
                 Server.clients[i].SendData(packet);
             }
@@ -121,7 +121,7 @@ namespace Server
         private static void SendTCPDataToAll(int exceptClient, Packet packet)
         {
             packet.WriteLength();
-            for (int i = 1; i <= Server.MaxPlayers; i++)
+            for (int i = 0; i < Server.MaxPlayers; i++)
             {
                 if (i != exceptClient)
                 {

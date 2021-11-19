@@ -11,12 +11,12 @@ public static class SocketDebug
         string fileName = @"\Debug.txt";
         if (!File.Exists(fileName))
         {
-            Debug.Log("Create");
+            Debug.Log(msg);
             File.WriteAllText(fileName, DateTime.Now + ": " + msg + "\n\n");
         }
         else
         {
-            Debug.Log("Append");
+            Debug.Log(msg);
             File.AppendAllText(fileName, DateTime.Now + ": " + msg + "\n\n");
         }
     }

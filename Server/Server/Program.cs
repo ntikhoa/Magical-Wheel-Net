@@ -27,7 +27,7 @@ namespace Server
             mainThread = new Thread(new ThreadStart(MainThread));
             mainThread.Start();
 
-            Server.Start(5, 26950);
+            Server.Start(2, 26950);
 
             //read command from server
             while (isRunning)

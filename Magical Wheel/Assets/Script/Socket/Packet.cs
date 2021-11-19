@@ -20,7 +20,8 @@ public enum ServerPackets
 /// <summary>Sent from client to server.</summary>
 public enum ClientPackets
 {
-    register = 1
+    register = 1,
+    answer = 100
 }
 
 public class Packet : IDisposable

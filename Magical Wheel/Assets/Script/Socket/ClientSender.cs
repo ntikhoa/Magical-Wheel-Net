@@ -23,7 +23,7 @@ public class ClientSender : MonoBehaviour
     }
     public static void Answer(string _letter, string _word)
     {
-        using (Packet _packet = new Packet((int)ClientPackets.register))
+        using (Packet _packet = new Packet((int)ClientPackets.answer))
         {
             _packet.Write(_letter);
             _packet.Write(_word);
