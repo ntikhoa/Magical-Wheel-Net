@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 
 namespace Server
 {
@@ -30,7 +31,7 @@ namespace Server
                     return;
                 }
             }
-
+            Thread.Sleep(2000);
             GameLogic.SetState(STATE.Turn_Start);
         }
     }
