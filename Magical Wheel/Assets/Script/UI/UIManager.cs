@@ -221,6 +221,7 @@ public class UIManager : MonoBehaviour
     public void Answer()
     {
         ClientSender.Answer(answerLetter.text, answerWord.text);
+        State = STATE.Play_Wait;
     }
     IEnumerator Timing()
     {
