@@ -70,6 +70,10 @@ namespace Server
                 socket = null;
                 player.id = -1;
                 player.username = "";
+
+                ServerSender.WelcomeAll(PktMsg.WELCOME);
+
+                GameLogic.SetState(STATE.Waiting_Player);
             }
         }
 
@@ -87,6 +91,14 @@ namespace Server
             catch (Exception e)
             {
                 Console.WriteLine($"Error sending data to player {id} via TCP: {e}");
+                socket.Close();
+                socket = null;
+                player.id = -1;
+                player.username = "";
+
+                ServerSender.WelcomeAll(PktMsg.WELCOME);
+
+                GameLogic.SetState(STATE.Waiting_Player);
             }
         }
 

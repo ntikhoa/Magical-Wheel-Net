@@ -64,7 +64,7 @@ namespace Server
                     }
                     // If the time for the next loop is in the past, aka it's time to execute another tick
                     GameLogic.Update(); // Execute game logic
-
+                    ServerSender.SendDummy();
                     nextLoop = nextLoop.AddMilliseconds(Constants.MS_PER_TICK); // Calculate at what point in time the next tick should be executed
 
                     if (nextLoop > DateTime.Now)

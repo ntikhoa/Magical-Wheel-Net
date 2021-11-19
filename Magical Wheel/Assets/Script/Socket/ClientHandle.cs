@@ -122,4 +122,9 @@ public class ClientHandle : MonoBehaviour
         UIManager.instance.State = STATE.End_Game;
 
     }
+
+    public static void Dummy(Packet _packet)
+    {
+
+    }
 }

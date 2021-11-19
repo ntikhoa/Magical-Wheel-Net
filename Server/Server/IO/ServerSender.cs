@@ -16,6 +16,15 @@ namespace Server
             }
         }
 
+        public static void WelcomeAll(string message)
+        {
+            using (Packet packet = new Packet((int)ServerPackets.welcome))
+            {
+                packet.Write(message);
+                SendTCPDataToAll(packet);
+            }
+        }
+
         public static void UsernameAlreadyExits(int toClientId, string message)
         {
             using (Packet packet = new Packet((int)ServerPackets.username_already_exist))
@@ -100,6 +109,14 @@ namespace Server
                     packet.Write(rank[i].score);
                 }
 
+                SendTCPDataToAll(packet);
+            }
+        }
+
+        public static void SendDummy()
+        {
+            using (Packet packet = new Packet((int)ServerPackets.dummy))
+            {
                 SendTCPDataToAll(packet);
             }
         }

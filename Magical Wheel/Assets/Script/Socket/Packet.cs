@@ -14,7 +14,8 @@ public enum ServerPackets
     turn_start = 5,
     turn_end = 6,
     disqualify = 8,
-    end_rank = 9
+    end_rank = 9,
+    dummy = 999
 }
 
 /// <summary>Sent from client to server.</summary>

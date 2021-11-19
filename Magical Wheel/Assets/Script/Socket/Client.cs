@@ -56,6 +56,7 @@ public class Client : MonoBehaviour
             { (int)ServerPackets.turn_end, ClientHandle.SendTurnEnd },
             { (int)ServerPackets.disqualify, ClientHandle.SendGuessWord },
             { (int)ServerPackets.end_rank, ClientHandle.SendGuessWord },
+            { (int)ServerPackets.dummy, ClientHandle.Dummy }
         };
     }
 
