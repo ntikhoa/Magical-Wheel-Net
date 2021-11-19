@@ -170,6 +170,10 @@ public class UIManager : MonoBehaviour
             Destroy(this);
         }
     }
+    private void Start()
+    {
+        StartCoroutine(Timing());
+    }
     private void Update()
     {
         UpdateUI();
