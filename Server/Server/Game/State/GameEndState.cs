@@ -67,7 +67,7 @@ namespace Server
         {
             GameLogic.timeout = 10; //in seconds
             GameLogic.turn = 0;
-            GameLogic.endGameTurn = Server.MaxPlayers * 5 - 1;
+            GameLogic.endGameTurn = Server.MaxPlayers * Constants.MAX_GAME_TURN - 1;
             GameLogic.lastGuess = "";
         }
     }

@@ -13,7 +13,7 @@ namespace Server
             Console.WriteLine("Waiting Server");
 
             ServerSender.InformPlayer();
-            Thread.Sleep(5000);
+            Thread.Sleep(2000);
             GameLogic.SetState(STATE.Game_Start);
         }
     }
