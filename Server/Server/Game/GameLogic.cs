@@ -33,22 +33,6 @@ namespace Server
         public static void SetState(STATE _state)
         {
             Console.WriteLine($"Attempt to go to state: {_state}");
-            /*
-            if(state == STATE.Waiting_Server)
-            {
-                if(_state!=state && state != STATE.Waiting_Player)
-                {
-                    return;
-                }
-            }
-            if (state == STATE.Waiting_Player)
-            {
-                if (_state != state && state != STATE.Game_Start)
-                {
-                    return;
-                }
-            }
-            */
 
             //when disconnect, every state can go to state Wating Player
             if (IsValidNextState(_state) || _state == STATE.Waiting_Player)

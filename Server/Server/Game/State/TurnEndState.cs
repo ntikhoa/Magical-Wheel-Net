@@ -24,8 +24,9 @@ namespace Server
                 if (Server.clients[playerIdTurn].player.scoreGet == 0)
                     GameLogic.turn += 1;
 
-                if (GameLogic.turn > GameLogic.endGameTurn 
-                    || GameLogic.guessWord.word == GameLogic.guessWord.currentWord)
+                if (GameLogic.turn > GameLogic.endGameTurn
+                    || GameLogic.guessWord.word == GameLogic.guessWord.currentWord
+                    || IsAnyPlayerQualify())
                 {
                     GameLogic.SetState(STATE.Game_End);
                     return;
@@ -35,6 +36,16 @@ namespace Server
             GameLogic.SetState(STATE.Turn_Start);
 
             Console.WriteLine("-------------------------------------");
+        }
+
+        private bool IsAnyPlayerQualify()
+        {
+            for (int i = 0; i < Server.clients.Count; i++)
+            {
+                if (!Server.clients[i].player.disqualify)
+                    return true;
+            }
+            return false;
         }
     }
 }
