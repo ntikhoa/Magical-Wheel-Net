@@ -17,7 +17,7 @@ public class ClientSender : MonoBehaviour
         {
             _packet.Write(Client.instance.id);
             _packet.Write(Client.instance.userName);
-
+            SocketDebug.Log($"Client {Client.instance.id} send {ClientPackets.register}");
             SendTCPData(_packet);
         }
     }
@@ -27,7 +27,7 @@ public class ClientSender : MonoBehaviour
         {
             _packet.Write(_letter);
             _packet.Write(_word);
-
+            SocketDebug.Log($"Client {Client.instance.id} send {ClientPackets.answer}: _letter: {_letter} _word: {_word}");
             SendTCPData(_packet);
         }
     }

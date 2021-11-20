@@ -26,7 +26,7 @@ namespace Server
 
                 if (GameLogic.turn > GameLogic.endGameTurn
                     || GameLogic.guessWord.word == GameLogic.guessWord.currentWord
-                    || IsAnyPlayerQualify())
+                    || !IsAnyPlayerQualify())
                 {
                     GameLogic.SetState(STATE.Game_End);
                     return;

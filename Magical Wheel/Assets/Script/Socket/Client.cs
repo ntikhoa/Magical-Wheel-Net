@@ -90,7 +90,7 @@ public class Client : MonoBehaviour
             }
             catch (Exception e)
             {
-               //SocketDebug.Log(e.Message);
+                SocketDebug.Log($"Cannot Locate Server: {e.Message}");
                 Disconnect();                
             }
         }
@@ -124,7 +124,7 @@ public class Client : MonoBehaviour
             }
             catch (Exception _ex)
             {
-                //SocketDebug.Log($"Error sending data to server via TCP: {_ex}");
+                SocketDebug.Log($"Error sending data to server via TCP: {_ex}");
                 Disconnect();
             }
         }
@@ -153,12 +153,12 @@ public class Client : MonoBehaviour
                 SocketError s_er = ex.SocketErrorCode;
                 if (s_er == SocketError.WouldBlock)
                 {
-                    //SocketDebug.Log($"would block: {s_er}");
+                    SocketDebug.Log($"would block: {s_er}");
                     socket.BeginConnect(instance.ip, instance.port, ConnectCallBack, socket);
                 }
                 else
                 {
-                    //SocketDebug.Log($"not would block: {s_er}");
+                    SocketDebug.Log($"not would block: {s_er}");
                     Disconnect();
                 }
             }
@@ -192,7 +192,7 @@ public class Client : MonoBehaviour
             }
             catch(Exception ex)
             {
-                //SocketDebug.Log(ex.Message);
+                SocketDebug.Log($"Receive fail: {ex}");
                 Disconnect();
             }
         }
@@ -216,6 +216,10 @@ public class Client : MonoBehaviour
                     using (Packet _p = new Packet(_packetByte))
                     {
                         int _pId = _p.ReadInt();
+                        if ((ServerPackets)_pId != ServerPackets.dummy)
+                        {
+                            SocketDebug.Log($"Client {Client.instance.id} Executing {(ServerPackets)_pId}");
+                        }
                         packetHandlers[_pId](_p);
                     }
                 });

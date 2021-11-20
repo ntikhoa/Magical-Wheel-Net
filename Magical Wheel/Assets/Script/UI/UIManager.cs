@@ -230,7 +230,8 @@ public class UIManager : MonoBehaviour
     }
     public void Answer()
     {
-        if(answerLetter.text == null)
+        State = STATE.Play_Wait;
+        if (answerLetter.text == null)
         {
             answerLetter.text = "";
         }
@@ -238,8 +239,10 @@ public class UIManager : MonoBehaviour
         {
             answerWord.text = "";
         }
-        ClientSender.Answer(answerLetter.text, answerWord.text);
-        State = STATE.Play_Wait;
+        ThreadManager.AddAction(() =>
+        {
+            ClientSender.Answer(answerLetter.text, answerWord.text);
+        });
     }
     IEnumerator Timing()
     {
@@ -248,7 +251,10 @@ public class UIManager : MonoBehaviour
         {
             if (curTime == 0)
             {
-                ClientSender.Answer("", "");
+                ThreadManager.AddAction(() =>
+                {
+                    ClientSender.Answer("", "");
+                });
             }
             else
             {

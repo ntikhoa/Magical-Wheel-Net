@@ -8,7 +8,7 @@ public static class SocketDebug
 {
     public static void Log(string msg)
     {
-        string fileName = @"\Debug.txt";
+        string fileName = $"D:/{Client.instance.userName}.txt";
         if (!File.Exists(fileName))
         {
             Debug.Log(msg);
