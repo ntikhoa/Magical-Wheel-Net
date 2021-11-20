@@ -34,11 +34,16 @@ namespace Server
         {
             Console.WriteLine($"Attempt to go to state: {_state}");
 
-            //when disconnect, every state can go to state Wating Player
+            //when player disconnect, every state can go to state Waiting Player
             if (IsValidNextState(_state) || _state == STATE.Waiting_Player)
             {
                 state = _state;
                 ServerUpdate();
+            }
+            else
+            {
+                Console.WriteLine($"Does not allow to go to state: {_state}");
+                Console.WriteLine("-------------------------------------");
             }
         }
 
