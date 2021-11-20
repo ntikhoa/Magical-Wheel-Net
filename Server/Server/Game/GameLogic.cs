@@ -31,6 +31,20 @@ namespace Server
 
         public static void SetState(STATE _state)
         {
+            if(state == STATE.Waiting_Server)
+            {
+                if(_state!=state && state != STATE.Waiting_Player)
+                {
+                    return;
+                }
+            }
+            if (state == STATE.Waiting_Player)
+            {
+                if (_state != state && state != STATE.Game_Start)
+                {
+                    return;
+                }
+            }
             state = _state;
             ServerUpdate();
         }
