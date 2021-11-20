@@ -24,17 +24,19 @@ namespace Server
                 if (Server.clients[playerIdTurn].player.scoreGet == 0)
                     GameLogic.turn += 1;
 
-                if (GameLogic.turn > GameLogic.endGameTurn
-                    || GameLogic.guessWord.word == GameLogic.guessWord.currentWord
-                    || !IsAnyPlayerQualify())
-                {
-                    GameLogic.SetState(STATE.Game_End);
-                    return;
-                }
             }
             Thread.Sleep(2000);
-            GameLogic.SetState(STATE.Turn_Start);
-
+            if (GameLogic.turn > GameLogic.endGameTurn
+                || GameLogic.guessWord.word == GameLogic.guessWord.currentWord
+                || !IsAnyPlayerQualify())
+            {
+                GameLogic.SetState(STATE.Game_End);
+                return;
+            }
+            else
+            {
+                GameLogic.SetState(STATE.Turn_Start);
+            }
             Console.WriteLine("-------------------------------------");
         }
 
