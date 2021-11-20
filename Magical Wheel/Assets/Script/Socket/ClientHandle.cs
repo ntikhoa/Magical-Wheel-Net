@@ -8,7 +8,7 @@ public class ClientHandle : MonoBehaviour
     {
         string _msg = _packet.ReadString();
         int _myId = _packet.ReadInt();
-
+        UIManager.instance.State = STATE.Waiting_Server;
         //SocketDebug.Log($"Message from server: {_msg}");
         UIManager.instance.DisplayServerMessage(_msg);
         Client.instance.id = _myId;

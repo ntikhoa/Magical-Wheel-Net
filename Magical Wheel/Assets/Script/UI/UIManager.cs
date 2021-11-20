@@ -117,6 +117,9 @@ public class UIManager : MonoBehaviour
         ActivateMenu(0);
         conBtn.interactable = false;
         userNameInp.interactable = false;
+
+        answerLetter.text = "";
+        answerWord.text = "";
     }
     private void PlayWaitSetup()
     {
@@ -140,6 +143,9 @@ public class UIManager : MonoBehaviour
         curWord.text = curWordRev;
         timer.text = curTime.ToString();
         score.text = Score.ToString();
+
+        answerLetter.text = "";
+        answerWord.text = "";
     }
     private void DisqualifySetup()
     {
@@ -248,7 +254,11 @@ public class UIManager : MonoBehaviour
             {
                 curTime--;
             }
-            timer.text = curTime.ToString();
+            AddUIAction(() =>
+            {
+                timer.text = curTime.ToString();
+            });
         }
+        StartCoroutine(Timing());
     }
 }
