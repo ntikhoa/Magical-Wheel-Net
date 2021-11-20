@@ -77,6 +77,7 @@ public class ClientHandle : MonoBehaviour
         else
         {
             UIManager.instance.DisplayServerMessage($"You have scored {_pscore} points.");
+            UIManager.instance.Score += _pscore;
         }
         UIManager.instance.updateAnswer(_pword);
         UIManager.instance.State = STATE.Play_Wait;

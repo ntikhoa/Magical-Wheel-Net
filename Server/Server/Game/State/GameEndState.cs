@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 using System.Collections.Generic;
 using System.Text;
 
@@ -18,7 +19,7 @@ namespace Server
             ServerSender.SendRank(rank);
 
             ResetGameObject();
-
+            Thread.Sleep(5000);
             GameLogic.SetState(STATE.Game_Start);
         }
         
