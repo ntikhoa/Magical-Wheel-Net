@@ -22,7 +22,8 @@ namespace Server
         
 
         private static STATE state = STATE.Waiting_Player; //Current state of the game server
-        private static Dictionary<int, State> stateActions;
+        private static Dictionary<STATE, State> stateActions;
+        private static Dictionary<STATE, STATE[]> adjacentStates;
 
         public static void Update()
         {
@@ -31,6 +32,8 @@ namespace Server
 
         public static void SetState(STATE _state)
         {
+            Console.WriteLine($"Attempt to go to state: {_state}");
+            /*
             if(state == STATE.Waiting_Server)
             {
                 if(_state!=state && state != STATE.Waiting_Player)
@@ -45,29 +48,58 @@ namespace Server
                     return;
                 }
             }
-            state = _state;
-            ServerUpdate();
+            */
+
+            //when disconnect, every state can go to state Wating Player
+            if (IsValidNextState(_state) || _state == STATE.Waiting_Player)
+            {
+                state = _state;
+                ServerUpdate();
+            }
         }
 
         private static void ServerUpdate()
         {
-            ThreadManager.ExecuteOnMainThread(stateActions[(int)state].Action);
+            ThreadManager.ExecuteOnMainThread(stateActions[state].Action);
             ThreadManager.ExecuteOnMainThread(UpdateState);
         }
         public static void InitGame()
         {
             //Prepare game server (loading game, etc)
-            stateActions = new Dictionary<int, State>
+            stateActions = new Dictionary<STATE, State>
             {
-                {(int)STATE.Waiting_Player, new WaitingPlayerState() },
-                {(int)STATE.Waiting_Server, new WaitingServerState() },
-                {(int)STATE.Game_Start, new GameStartState() },
-                {(int)STATE.Turn_Start, new TurnStartState() },
-                {(int)STATE.Turn_End, new TurnEndState() },
-                {(int)STATE.Game_End, new GameEndState() }
+                {STATE.Waiting_Player, new WaitingPlayerState() },
+                {STATE.Waiting_Server, new WaitingServerState() },
+                {STATE.Game_Start, new GameStartState() },
+                {STATE.Turn_Start, new TurnStartState() },
+                {STATE.Turn_End, new TurnEndState() },
+                {STATE.Game_End, new GameEndState() }
+            };
+
+            adjacentStates = new Dictionary<STATE, STATE[]>
+            {
+                {STATE.Waiting_Player, new STATE[] { STATE.Waiting_Player, STATE.Waiting_Server } },
+                {STATE.Waiting_Server, new STATE[] { STATE.Game_Start } },
+                {STATE.Game_Start, new STATE[] { STATE.Turn_Start } },
+                {STATE.Turn_Start, new STATE[] { STATE.Turn_Start, STATE.Turn_End } },
+                {STATE.Turn_End, new STATE[] { STATE.Turn_Start, STATE.Game_End } },
+                {STATE.Game_End, new STATE[] { STATE.Game_Start } }
             };
 
             ServerUpdate();
+        }
+
+        private static bool IsValidNextState(STATE _state)
+        {
+            var adjacentState = adjacentStates[state];
+            for (int i = 0; i < adjacentState.Length; i++)
+            {
+                if (_state == adjacentState[i])
+                {
+                    return true;
+                }
+            }
+            return false;
         }
      
         private static void UpdateState()

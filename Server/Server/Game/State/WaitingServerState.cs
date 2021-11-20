@@ -15,6 +15,8 @@ namespace Server
             ServerSender.InformPlayer();
             Thread.Sleep(2000);
             GameLogic.SetState(STATE.Game_Start);
+
+            Console.WriteLine("-------------------------------------");
         }
     }
 }

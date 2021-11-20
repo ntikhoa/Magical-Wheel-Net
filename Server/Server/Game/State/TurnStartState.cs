@@ -25,7 +25,7 @@ namespace Server
 
             ServerSender.SendTurnStart(playerIdTurn);
 
-            
+            Console.WriteLine("-------------------------------------");
         }
     }
 }

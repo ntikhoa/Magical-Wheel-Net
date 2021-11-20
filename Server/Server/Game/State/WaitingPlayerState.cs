@@ -17,6 +17,8 @@ namespace Server
                     Console.WriteLine($"{Server.clients[i].player.username} is ready! (Player's ID: {Server.clients[i].player.id})");
                 }
             }
+
+            Console.WriteLine("-------------------------------------");
         }
     }
 }

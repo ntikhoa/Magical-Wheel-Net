@@ -33,6 +33,8 @@ namespace Server
             }
             Thread.Sleep(2000);
             GameLogic.SetState(STATE.Turn_Start);
+
+            Console.WriteLine("-------------------------------------");
         }
     }
 }

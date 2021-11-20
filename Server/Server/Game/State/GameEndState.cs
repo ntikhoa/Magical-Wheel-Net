@@ -21,6 +21,8 @@ namespace Server
             ResetGameObject();
             Thread.Sleep(5000);
             GameLogic.SetState(STATE.Game_Start);
+
+            Console.WriteLine("-------------------------------------");
         }
         
         private List<Player> InitRank()
