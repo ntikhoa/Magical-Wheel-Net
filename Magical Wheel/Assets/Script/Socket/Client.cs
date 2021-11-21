@@ -24,9 +24,10 @@ public class Client : MonoBehaviour
     public IEnumerator BeatTracking()
     {
         yield return new WaitForSeconds(2*timedBeat);
-        SocketDebug.Log("Heart Fail");
+        SocketDebug.Log("Heart Checking");
         if(rcvBeat == false)
         {
+            SocketDebug.Log("Heart Failure");
             Disconnect();
         }
         rcvBeat = false;
