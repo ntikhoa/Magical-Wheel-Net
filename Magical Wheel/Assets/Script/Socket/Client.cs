@@ -201,14 +201,11 @@ public class Client : MonoBehaviour
         {
             int _packetLen = 0;
             receiveData.SetBytes(_data);
-            if(receiveData.UnreadLength() >= 4)
+            while (receiveData.UnreadLength() >= 4 && _packetLen <= 0)
             {
                 _packetLen = receiveData.ReadInt();
-                if(_packetLen <= 0)
-                {
-                    return true;
-                }
             }
+
             while(_packetLen > 0 && _packetLen <= receiveData.UnreadLength())
             {
                 byte[] _packetByte = receiveData.ReadBytes(_packetLen);
@@ -216,30 +213,18 @@ public class Client : MonoBehaviour
                     using (Packet _p = new Packet(_packetByte))
                     {
                         int _pId = _p.ReadInt();
-                        if ((ServerPackets)_pId != ServerPackets.dummy)
-                        {
-                            SocketDebug.Log($"Client {Client.instance.id} Executing {(ServerPackets)_pId}");
-                        }
-                        if ((ServerPackets)_pId == ServerPackets.welcome)
-                        {
-                            Debug.Log($"Client {Client.instance.id} Executing {(ServerPackets)_pId}");
-                        }
                         packetHandlers[_pId](_p);
                     }
                 });
 
                 _packetLen = 0;
-                if (receiveData.UnreadLength() >= 4)
+                while (receiveData.UnreadLength() >= 4 && _packetLen <= 0)
                 {
                     _packetLen = receiveData.ReadInt();
-                    if (_packetLen <= 0)
-                    {
-                        return true;
-                    }
                 }
             }
 
-            return (_packetLen <= 1);
+            return (_packetLen <= 0);
         }
     }
 }

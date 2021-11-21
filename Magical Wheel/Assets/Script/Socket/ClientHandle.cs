@@ -23,7 +23,6 @@ public class ClientHandle : MonoBehaviour
             {
                 UIManager.instance.State = STATE.Waiting_Server;
                 UIManager.instance.DisplayServerMessage(_msg);
-                ClientSender.WelcomeReceived();
             }
         }
     }
