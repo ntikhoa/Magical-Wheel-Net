@@ -16,21 +16,20 @@ public class Client : MonoBehaviour
     private static Dictionary<int, PacketHandler> packetHandlers;
 
     //Hearbeat Check
-    private float preBeat = 0;
-    private float beat = 0;
-    private float timedBeat = 0;
-    private bool rcvBeat = false;
     private Coroutine trackBeat = null;
+    private bool rcvBeat = false;
     public IEnumerator BeatTracking()
     {
-        yield return new WaitForSeconds(2*timedBeat);
-        SocketDebug.Log("Heart Checking");
-        if(rcvBeat == false)
+        yield return new WaitForSeconds(2);
+        if (!rcvBeat)
         {
-            SocketDebug.Log("Heart Failure");
             Disconnect();
         }
-        rcvBeat = false;
+        else
+        {
+            rcvBeat = false;
+            trackBeat = StartCoroutine(BeatTracking());
+        }
     }
 
     private void Awake()
@@ -84,27 +83,11 @@ public class Client : MonoBehaviour
 
     public void UpdateBeat()
     {
-        if(preBeat == 0)
-        {
-            preBeat = Time.time;
-            return;
-        }
-        else
-        {
-            if(beat == 0)
-            {
-                beat = Time.time;
-                return;
-            }
-        }
-        preBeat = beat;
-        beat = Time.time;
-        timedBeat = beat - preBeat;
-        if (trackBeat != null)
-        {
-            StopCoroutine(trackBeat);
-        }
         rcvBeat = true;
+    }
+
+    public void StartBeat()
+    {
         trackBeat = StartCoroutine(BeatTracking());
     }
     public class TCP
@@ -128,7 +111,6 @@ public class Client : MonoBehaviour
             //SocketDebug.Log("Begin Connect");
             try
             {
-                Client.instance.UpdateBeat();
                 socket.BeginConnect(instance.ip, instance.port, ConnectCallBack, socket);
             }
             catch (Exception e)
@@ -184,7 +166,7 @@ public class Client : MonoBehaviour
                     return;
                 }
 
-                Client.instance.UpdateBeat();
+                Client.instance.StartBeat();
                 //stream = socket.GetStream();
                 receiveData = new Packet();
                 //SocketDebug.Log("Begin Read");
