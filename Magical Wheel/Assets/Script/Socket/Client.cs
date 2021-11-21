@@ -220,6 +220,10 @@ public class Client : MonoBehaviour
                         {
                             SocketDebug.Log($"Client {Client.instance.id} Executing {(ServerPackets)_pId}");
                         }
+                        if ((ServerPackets)_pId == ServerPackets.welcome)
+                        {
+                            Debug.Log($"Client {Client.instance.id} Executing {(ServerPackets)_pId}");
+                        }
                         packetHandlers[_pId](_p);
                     }
                 });

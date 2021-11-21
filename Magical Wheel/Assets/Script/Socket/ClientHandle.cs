@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -7,12 +8,24 @@ public class ClientHandle : MonoBehaviour
     public static void Welcome(Packet _packet)
     {
         string _msg = _packet.ReadString();
-        int _myId = _packet.ReadInt();
-        UIManager.instance.State = STATE.Waiting_Server;
-        //SocketDebug.Log($"Message from server: {_msg}");
-        UIManager.instance.DisplayServerMessage(_msg);
-        Client.instance.id = _myId;
-        ClientSender.WelcomeReceived();
+        try
+        {
+            int _myId = _packet.ReadInt();
+            UIManager.instance.State = STATE.Waiting_Server;
+            //SocketDebug.Log($"Message from server: {_msg}");
+            UIManager.instance.DisplayServerMessage(_msg);
+            Client.instance.id = _myId;
+            ClientSender.WelcomeReceived();
+        }
+        catch(Exception e)
+        {
+            if (e.Message == "Could not read value of type 'int'!")
+            {
+                UIManager.instance.State = STATE.Waiting_Server;
+                UIManager.instance.DisplayServerMessage(_msg);
+                ClientSender.WelcomeReceived();
+            }
+        }
     }
 
     public static void UsernameAlreadyExits(Packet _packet)

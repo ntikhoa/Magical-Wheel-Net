@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -11,7 +12,8 @@ public enum STATE
     Play_Wait = 2,
     Play_Turn = 3,
     Disqualify = 4,
-    End_Game = 5
+    End_Game = 5,
+    Start_Game = 6
 }
 public class UIManager : MonoBehaviour
 {
@@ -73,34 +75,42 @@ public class UIManager : MonoBehaviour
 
     public int Score;
     static public UIManager instance;
-
+    static public Dictionary<STATE, STATE[]> ValidTransfer;
     public STATE State
     {
         get { return (STATE)state; }
         set
         {
-            switch (value)
+            Debug.Log($"{state} -> {value}");
+            if (ValidTransfer[state].Contains(value))
             {
-                case STATE.Register:
-                    AddUIAction(RegisterSetup);
-                    break;
-                case STATE.Waiting_Server:
-                    AddUIAction(WaitingSetup);
-                    break;
-                case STATE.Play_Wait:
-                    AddUIAction(PlayWaitSetup);
-                    break;
-                case STATE.Play_Turn:
-                    AddUIAction(PlayTurnSetup);
-                    break;
-                case STATE.Disqualify:
-                    AddUIAction(DisqualifySetup);
-                    break;
-                case STATE.End_Game:
-                    AddUIAction(EndGameSetup);
-                    break;
+                Debug.Log($"V");
+                switch (value)
+                {
+                    case STATE.Register:
+                        AddUIAction(RegisterSetup);
+                        break;
+                    case STATE.Waiting_Server:
+                        AddUIAction(WaitingSetup);
+                        break;
+                    case STATE.Start_Game:
+                        AddUIAction(WaitingStart);
+                        break;
+                    case STATE.Play_Wait:
+                        AddUIAction(PlayWaitSetup);
+                        break;
+                    case STATE.Play_Turn:
+                        AddUIAction(PlayTurnSetup);
+                        break;
+                    case STATE.Disqualify:
+                        AddUIAction(DisqualifySetup);
+                        break;
+                    case STATE.End_Game:
+                        AddUIAction(EndGameSetup);
+                        break;
+                }
+                state = value;
             }
-            state = value;
         }
     }
 
@@ -113,6 +123,15 @@ public class UIManager : MonoBehaviour
         Debug.Log(userNameInp.interactable);
     }
     private void WaitingSetup()
+    {
+        ActivateMenu(0);
+        conBtn.interactable = false;
+        userNameInp.interactable = false;
+
+        answerLetter.text = "";
+        answerWord.text = "";
+    }
+    private void WaitingStart()
     {
         ActivateMenu(0);
         conBtn.interactable = false;
@@ -178,6 +197,15 @@ public class UIManager : MonoBehaviour
     }
     private void Start()
     {
+        ValidTransfer = new Dictionary<STATE, STATE[]> {
+            {STATE.Register, new STATE[]{ STATE.Register, STATE.Waiting_Server} },
+            {STATE.Waiting_Server, new STATE[]{ STATE.Register, STATE.Waiting_Server, STATE.Start_Game } },
+            {STATE.Start_Game, new STATE[]{ STATE.Register, STATE.Waiting_Server, STATE.Play_Turn, STATE.Play_Wait } },
+            {STATE.Play_Turn, new STATE[]{ STATE.Register, STATE.Waiting_Server, STATE.Play_Turn, STATE.Play_Wait, STATE.Disqualify, STATE.End_Game } },
+            {STATE.Play_Wait, new STATE[]{ STATE.Register, STATE.Waiting_Server, STATE.Play_Turn, STATE.Play_Wait, STATE.Disqualify, STATE.End_Game } },
+            {STATE.Disqualify, new STATE[]{ STATE.Register, STATE.Waiting_Server, STATE.Disqualify, STATE.End_Game } },
+            {STATE.End_Game, new STATE[]{ STATE.Register, STATE.Waiting_Server, STATE.End_Game, STATE.Start_Game } }
+        };
         StartCoroutine(Timing());
     }
     private void Update()
@@ -211,7 +239,7 @@ public class UIManager : MonoBehaviour
             hint.text = _hint;
             answerWord.characterLimit = wordLen;
         });
-        State = STATE.Play_Wait;
+        State = STATE.Start_Game;
     }
     public void updateAnswer(string newWord)
     {
@@ -251,6 +279,7 @@ public class UIManager : MonoBehaviour
         {
             if (curTime == 0)
             {
+                State = STATE.Play_Wait;
                 ThreadManager.AddAction(() =>
                 {
                     ClientSender.Answer("", "");
