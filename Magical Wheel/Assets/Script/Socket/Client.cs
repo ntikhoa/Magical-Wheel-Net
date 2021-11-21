@@ -15,6 +15,22 @@ public class Client : MonoBehaviour
     private delegate void PacketHandler(Packet _packet);
     private static Dictionary<int, PacketHandler> packetHandlers;
 
+    //Hearbeat Check
+    private float preBeat = 0;
+    private float beat = 0;
+    private float timedBeat = 0;
+    private bool rcvBeat = false;
+    private Coroutine trackBeat = null;
+    public IEnumerator BeatTracking()
+    {
+        yield return new WaitForSeconds(2*timedBeat);
+        SocketDebug.Log("Heart Fail");
+        if(rcvBeat == false)
+        {
+            Disconnect();
+        }
+        rcvBeat = false;
+    }
 
     private void Awake()
     {
@@ -65,6 +81,31 @@ public class Client : MonoBehaviour
         tcp.Disconnect();
     }
 
+    public void UpdateBeat()
+    {
+        if(preBeat == 0)
+        {
+            preBeat = Time.time;
+            return;
+        }
+        else
+        {
+            if(beat == 0)
+            {
+                beat = Time.time;
+                return;
+            }
+        }
+        preBeat = beat;
+        beat = Time.time;
+        timedBeat = beat - preBeat;
+        if (trackBeat != null)
+        {
+            StopCoroutine(trackBeat);
+        }
+        rcvBeat = true;
+        trackBeat = StartCoroutine(BeatTracking());
+    }
     public class TCP
     {
         public TcpClient socket;
@@ -86,6 +127,7 @@ public class Client : MonoBehaviour
             //SocketDebug.Log("Begin Connect");
             try
             {
+                Client.instance.UpdateBeat();
                 socket.BeginConnect(instance.ip, instance.port, ConnectCallBack, socket);
             }
             catch (Exception e)
@@ -140,6 +182,8 @@ public class Client : MonoBehaviour
                 {
                     return;
                 }
+
+                Client.instance.UpdateBeat();
                 //stream = socket.GetStream();
                 receiveData = new Packet();
                 //SocketDebug.Log("Begin Read");

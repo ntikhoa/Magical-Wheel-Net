@@ -138,6 +138,6 @@ public class ClientHandle : MonoBehaviour
 
     public static void Dummy(Packet _packet)
     {
-
+        Client.instance.UpdateBeat();
     }
 }
