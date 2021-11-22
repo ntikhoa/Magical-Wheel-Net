@@ -105,8 +105,8 @@ public class Packet : IDisposable
     {
         if (_shouldReset)
         {
-            buffer.Clear(); // Clear buffer
-            readableBuffer = null;
+            buffer.RemoveRange(0, readPos); // Remove read data
+            readableBuffer = buffer.ToArray();
             readPos = 0; // Reset readPos
         }
         else

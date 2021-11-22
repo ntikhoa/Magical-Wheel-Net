@@ -227,11 +227,13 @@ public class Client : MonoBehaviour
 
         private bool CheckInvalidData(byte[] _data)
         {
+            bool _readlen = false;
             int _packetLen = 0;
             receiveData.SetBytes(_data);
             while (receiveData.UnreadLength() >= 4 && _packetLen <= 0)
             {
                 _packetLen = receiveData.ReadInt();
+                _readlen = true;
             }
 
             while(_packetLen > 0 && _packetLen <= receiveData.UnreadLength())
@@ -242,6 +244,7 @@ public class Client : MonoBehaviour
                     {
                         int _pId = _p.ReadInt();
                         packetHandlers[_pId](_p);
+                        _readlen = false;
                     }
                 });
 
@@ -249,10 +252,11 @@ public class Client : MonoBehaviour
                 while (receiveData.UnreadLength() >= 4 && _packetLen <= 0)
                 {
                     _packetLen = receiveData.ReadInt();
+                    _readlen = true;
                 }
             }
 
-            return (_packetLen <= 0);
+            return (!_readlen);
         }
     }
 }
