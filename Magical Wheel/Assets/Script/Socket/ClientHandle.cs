@@ -22,7 +22,7 @@ public class ClientHandle : MonoBehaviour
             if (e.Message == "Could not read value of type 'int'!")
             {
                 UIManager.instance.State = STATE.Waiting_Server;
-                UIManager.instance.DisplayServerMessage(_msg);
+                UIManager.instance.DisplayServerMessage("Something wrong, reconnecting with server...");
             }
         }
     }
@@ -38,13 +38,15 @@ public class ClientHandle : MonoBehaviour
     public static void InformPlayer(Packet _packet)
     {
         int _count = _packet.ReadInt();
+        string _msg = _count.ToString() + " players have joined:";
         for (int i = 0; i < _count; i++)
         {
-            _packet.ReadInt();
-            _packet.ReadString();
+            int _id = _packet.ReadInt();
+            string _name = _packet.ReadString();
+            _msg += $"+ {_name}\n";
         }
         //SocketDebug.Log(_count.ToString() + " players have joined");
-        UIManager.instance.DisplayServerMessage(_count.ToString() + " players have joined");
+        UIManager.instance.DisplayServerMessage(_msg);
     }
 
     public static void SendGuessWord(Packet _packet)

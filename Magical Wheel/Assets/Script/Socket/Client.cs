@@ -78,6 +78,7 @@ public class Client : MonoBehaviour
 
     public void Disconnect()
     {
+        UIManager.instance.DisplayServerMessage("Game ended.");
         tcp.Disconnect();
     }
 
