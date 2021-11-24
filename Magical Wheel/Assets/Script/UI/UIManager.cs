@@ -254,6 +254,14 @@ public class UIManager : MonoBehaviour
     {
         userName = userNameInp.text;
         State = STATE.Waiting_Server;
+        if(Client.instance.tcp.socket != null)
+        {
+            if (Client.instance.tcp.socket.Connected)
+            {
+                Client.instance.userName = userName;
+                ClientSender.WelcomeReceived();
+            }
+        }
         Client.instance.ConnectedToServer();
     }
     public void Answer()
