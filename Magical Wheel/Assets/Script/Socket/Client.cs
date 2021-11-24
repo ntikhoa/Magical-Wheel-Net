@@ -89,7 +89,10 @@ public class Client : MonoBehaviour
 
     public void StartBeat()
     {
-        trackBeat = StartCoroutine(BeatTracking());
+        UIManager.AddUIAction(() =>
+        {
+            trackBeat = StartCoroutine(BeatTracking());
+        });
     }
     public class TCP
     {
