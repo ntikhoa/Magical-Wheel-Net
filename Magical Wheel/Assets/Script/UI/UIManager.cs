@@ -120,7 +120,6 @@ public class UIManager : MonoBehaviour
         ActivateMenu(0);
         conBtn.interactable = true;
         userNameInp.interactable = true;
-        Debug.Log(userNameInp.interactable);
     }
     private void WaitingSetup()
     {
@@ -260,6 +259,7 @@ public class UIManager : MonoBehaviour
             {
                 Client.instance.userName = userName;
                 ClientSender.WelcomeReceived();
+                return;
             }
         }
         Client.instance.ConnectedToServer();

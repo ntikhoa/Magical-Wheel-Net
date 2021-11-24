@@ -110,36 +110,53 @@ namespace Server
 
         private bool HandleData(byte[] data)
         {
-            bool _readlen = false;
-            int _packetLen = 0;
+            int packetLength = 0;
+
             receivedData.SetBytes(data);
-            while (receivedData.UnreadLength() >= 4 && _packetLen <= 0)
-            {
-                _packetLen = receivedData.ReadInt();
-                _readlen = true;
-            }
 
-            while (_packetLen > 0 && _packetLen <= receivedData.UnreadLength())
+            if (receivedData.UnreadLength() >= 4)
             {
-                byte[] _packetByte = receivedData.ReadBytes(_packetLen);
-                ThreadManager.ExecuteOnMainThread(() => {
-                    using (Packet _p = new Packet(_packetByte))
-                    {
-                        int _pId = _p.ReadInt();
-                        Server.packetHandlers[_pId](id, _p);
-                        _readlen = false;
-                    }
-                });
-
-                _packetLen = 0;
-                while (receivedData.UnreadLength() >= 4 && _packetLen <= 0)
+                // If client's received data contains a packet
+                packetLength = receivedData.ReadInt();
+                if (packetLength <= 0)
                 {
-                    _packetLen = receivedData.ReadInt();
-                    _readlen = true;
+                    // If packet contains no data
+                    return true; // Reset receivedData instance to allow it to be reused
                 }
             }
 
-            return (!_readlen);
+            while (packetLength > 0 && packetLength <= receivedData.UnreadLength())
+            {
+                // While packet contains data AND packet data length doesn't exceed the length of the packet we're reading
+                byte[] _packetBytes = receivedData.ReadBytes(packetLength);
+                ThreadManager.ExecuteOnMainThread(() =>
+                {
+                    using (Packet _packet = new Packet(_packetBytes))
+                    {
+                        int _packetId = _packet.ReadInt();
+                        Server.packetHandlers[_packetId](id, _packet); // Call appropriate method to handle the packet
+                    }
+                });
+
+                packetLength = 0; // Reset packet length
+                if (receivedData.UnreadLength() >= 4)
+                {
+                    // If client's received data contains another packet
+                    packetLength = receivedData.ReadInt();
+                    if (packetLength <= 0)
+                    {
+                        // If packet contains no data
+                        return true; // Reset receivedData instance to allow it to be reused
+                    }
+                }
+            }
+
+            if (packetLength <= 1)
+            {
+                return true; // Reset receivedData instance to allow it to be reused
+            }
+
+            return false;
         }
     }
 }

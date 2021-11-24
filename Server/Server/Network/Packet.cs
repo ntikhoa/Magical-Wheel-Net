@@ -106,16 +106,13 @@ namespace Server
         {
             if (_shouldReset)
             {
-                buffer.RemoveRange(0, readPos); // Remove read data
-                readableBuffer = buffer.ToArray();
+                buffer.Clear(); // Clear buffer
+                readableBuffer = null;
                 readPos = 0; // Reset readPos
             }
             else
             {
                 readPos -= 4; // "Unread" the last read int
-                buffer.RemoveRange(0, readPos); // Remove read data
-                readableBuffer = buffer.ToArray();
-                readPos = 0; // Reset readPos
             }
         }
         #endregion

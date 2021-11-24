@@ -20,9 +20,10 @@ public class Client : MonoBehaviour
     private bool rcvBeat = false;
     public IEnumerator BeatTracking()
     {
-        yield return new WaitForSeconds(2);
+        yield return new WaitForSeconds(10);
         if (!rcvBeat)
         {
+            SocketDebug.Log("Heart Failure");
             Disconnect();
         }
         else
@@ -231,36 +232,54 @@ public class Client : MonoBehaviour
 
         private bool CheckInvalidData(byte[] _data)
         {
-            bool _readlen = false;
-            int _packetLen = 0;
+            int packetLength = 0;
+
             receiveData.SetBytes(_data);
-            while (receiveData.UnreadLength() >= 4 && _packetLen <= 0)
-            {
-                _packetLen = receiveData.ReadInt();
-                _readlen = true;
-            }
 
-            while(_packetLen > 0 && _packetLen <= receiveData.UnreadLength())
+            if (receiveData.UnreadLength() >= 4)
             {
-                byte[] _packetByte = receiveData.ReadBytes(_packetLen);
-                ThreadManager.AddAction(() => {
-                    using (Packet _p = new Packet(_packetByte))
-                    {
-                        int _pId = _p.ReadInt();
-                        packetHandlers[_pId](_p);
-                        _readlen = false;
-                    }
-                });
-
-                _packetLen = 0;
-                while (receiveData.UnreadLength() >= 4 && _packetLen <= 0)
+                // If client's received data contains a packet
+                packetLength = receiveData.ReadInt();
+                if (packetLength <= 0)
                 {
-                    _packetLen = receiveData.ReadInt();
-                    _readlen = true;
+                    // If packet contains no data
+                    return true; // Reset receivedData instance to allow it to be reused
                 }
             }
 
-            return (!_readlen);
+            while (packetLength > 0 && packetLength <= receiveData.UnreadLength())
+            {
+                // While packet contains data AND packet data length doesn't exceed the length of the packet we're reading
+                byte[] _packetBytes = receiveData.ReadBytes(packetLength);
+                ThreadManager.AddAction(() =>
+                {
+                    using (Packet _packet = new Packet(_packetBytes))
+                    {
+                        int _packetId = _packet.ReadInt();
+                        packetHandlers[_packetId](_packet); // Call appropriate method to handle the packet
+                    }
+                });
+
+                packetLength = 0; // Reset packet length
+                if (receiveData.UnreadLength() >= 4)
+                {
+                    // If client's received data contains another packet
+                    packetLength = receiveData.ReadInt();
+                    if (packetLength <= 0)
+                    {
+                        // If packet contains no data
+                        return true; // Reset receivedData instance to allow it to be reused
+                    }
+                }
+            }
+
+            if (packetLength <= 1)
+            {
+                return true; // Reset receivedData instance to allow it to be reused
+            }
+
+            return false;
+
         }
     }
 }
