@@ -64,6 +64,7 @@ public class Client : MonoBehaviour
     {
         packetHandlers = new Dictionary<int, PacketHandler>()
         {
+            { (int)ServerPackets.reset, ClientHandle.Restart },
             { (int)ServerPackets.welcome, ClientHandle.Welcome },
             { (int)ServerPackets.username_already_exist, ClientHandle.UsernameAlreadyExits },
             { (int)ServerPackets.inform_player, ClientHandle.InformPlayer },

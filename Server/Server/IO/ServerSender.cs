@@ -18,7 +18,7 @@ namespace Server
 
         public static void WelcomeAll(string message)
         {
-            using (Packet packet = new Packet((int)ServerPackets.welcome))
+            using (Packet packet = new Packet((int)ServerPackets.restart))
             {
                 packet.Write(message);
                 SendTCPDataToAll(packet);

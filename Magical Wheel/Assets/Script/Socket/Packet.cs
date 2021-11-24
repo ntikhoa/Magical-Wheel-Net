@@ -7,6 +7,7 @@ using UnityEngine;
 /// <summary>Sent from server to client.</summary>
 public enum ServerPackets
 {
+    reset = 10,
     welcome = 1,
     username_already_exist = 2,
     inform_player = 3,

@@ -8,25 +8,20 @@ public class ClientHandle : MonoBehaviour
     public static void Welcome(Packet _packet)
     {
         string _msg = _packet.ReadString();
-        try
-        {
-            int _myId = _packet.ReadInt();
-            UIManager.instance.State = STATE.Waiting_Server;
-            //SocketDebug.Log($"Message from server: {_msg}");
-            UIManager.instance.DisplayServerMessage(_msg);
-            Client.instance.id = _myId;
-            ClientSender.WelcomeReceived();
-        }
-        catch(Exception e)
-        {
-            if (e.Message == "Could not read value of type 'int'!")
-            {
-                UIManager.instance.State = STATE.Waiting_Server;
-                UIManager.instance.DisplayServerMessage("Something wrong, reconnecting with server...");
-            }
-        }
+        int _myId = _packet.ReadInt();
+        UIManager.instance.State = STATE.Waiting_Server;
+        //SocketDebug.Log($"Message from server: {_msg}");
+        UIManager.instance.DisplayServerMessage(_msg);
+        Client.instance.id = _myId;
+        ClientSender.WelcomeReceived();
     }
 
+    public static void Restart(Packet _packet)
+    {
+        string _msg = _packet.ReadString();
+        UIManager.instance.State = STATE.Waiting_Server;
+        UIManager.instance.DisplayServerMessage("Something wrong, reconnecting with server...");
+    }
     public static void UsernameAlreadyExits(Packet _packet)
     {
         string _msg = _packet.ReadString();
