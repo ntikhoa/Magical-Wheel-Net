@@ -20,7 +20,7 @@ public class Client : MonoBehaviour
     private bool rcvBeat = false;
     public IEnumerator BeatTracking()
     {
-        yield return new WaitForSeconds(10);
+        yield return new WaitForSeconds(5);
         if (!rcvBeat)
         {
             SocketDebug.Log("Heart Failure");
@@ -153,6 +153,20 @@ public class Client : MonoBehaviour
                     socket.Client.BeginSend(_packet.ToArray(), 0, _packet.Length(), SocketFlags.None, null, null);
                 }
             }
+            catch (SocketException ex)
+            {
+                SocketError s_er = ex.SocketErrorCode;
+                if (s_er == SocketError.WouldBlock)
+                {
+                    SocketDebug.Log($"would block: {s_er}");
+                    socket.Client.BeginSend(_packet.ToArray(), 0, _packet.Length(), SocketFlags.None, null, null);
+                }
+                else
+                {
+                    SocketDebug.Log($"not would block: {s_er}");
+                    Disconnect();
+                }
+            }
             catch (Exception _ex)
             {
                 SocketDebug.Log($"Error sending data to server via TCP: {_ex}");
@@ -180,24 +194,9 @@ public class Client : MonoBehaviour
                 //nNon Blocking
                 socket.Client.BeginReceive(receiveBuffer, 0, dataSize, SocketFlags.None, ReceiveCallBack, null);
             }
-            catch(SocketException ex)
-            {
-                //SocketDebug.Log(ex.Message);
-                SocketError s_er = ex.SocketErrorCode;
-                if (s_er == SocketError.WouldBlock)
-                {
-                    SocketDebug.Log($"would block: {s_er}");
-                    socket.BeginConnect(instance.ip, instance.port, ConnectCallBack, socket);
-                }
-                else
-                {
-                    SocketDebug.Log($"not would block: {s_er}");
-                    Disconnect();
-                }
-            }
             catch(Exception ex)
             {
-                //SocketDebug.Log(ex.Message);
+                SocketDebug.Log(ex.Message);
                 Disconnect();
             }
         }
@@ -210,9 +209,9 @@ public class Client : MonoBehaviour
                 //int _bytelength = stream.EndRead(_res);
                 //Non Blocking
                 int _bytelength = socket.Client.EndReceive(_res);
-                if(_bytelength == 0)
+                if(_bytelength <= 0)
                 {
-                    //SocketDebug.Log("Length = 0");
+                    socket.Client.BeginReceive(receiveBuffer, 0, dataSize, SocketFlags.None, ReceiveCallBack, null);
                     return;
                 }
 

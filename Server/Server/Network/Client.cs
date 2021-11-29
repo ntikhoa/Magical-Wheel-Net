@@ -50,6 +50,7 @@ namespace Server
                 int byteLength = socket.Client.EndReceive(result);
                 if (byteLength <= 0)
                 {
+                    socket.Client.BeginReceive(receiveBuffer, 0, dataBufferSize, SocketFlags.None, ReceiveCallback, null);
                     return;
                 }
 
@@ -89,6 +90,29 @@ namespace Server
                     //stream.BeginWrite(packet.ToArray(), 0, packet.Length(), null, null);
                     //Non Blocking
                     socket.Client.BeginSend(packet.ToArray(), 0, packet.Length(), SocketFlags.None, null, null);
+                }
+            }
+            catch (SocketException ex)
+            {
+                SocketError s_er = ex.SocketErrorCode;
+                if (s_er == SocketError.WouldBlock)
+                {
+                    socket.Client.BeginSend(packet.ToArray(), 0, packet.Length(), SocketFlags.None, null, null);
+                }
+                else
+                {
+                    Console.WriteLine($"Error sending data to player {id} via TCP: {ex}");
+                    if (socket != null)
+                    {
+                        socket.Close();
+                    }
+                    socket = null;
+                    player.id = -1;
+                    player.username = "";
+
+                    ServerSender.WelcomeAll(PktMsg.WELCOME);
+
+                    GameLogic.SetState(STATE.Waiting_Player);
                 }
             }
             catch (Exception e)
